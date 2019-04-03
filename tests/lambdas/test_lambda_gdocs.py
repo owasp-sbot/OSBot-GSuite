@@ -18,6 +18,9 @@ class test_Lambda_lambda_gdocs(TestCase):
 
     def test_invoke_directly(self):
         response = run({ 'data':{}},{})
+        Dev.pprint('*******')
+        Dev.pprint(response)
+        Dev.pprint('------')
         assert response[0] == '*Here are the `GDocs_Commands` commands available:*'
 
     def test_invoke___with_no_command(self):
