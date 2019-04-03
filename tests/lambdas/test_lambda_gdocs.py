@@ -12,9 +12,8 @@ class test_Lambda_lambda_gdocs(TestCase):
     def setUp(self):
         self.lambda_gdocs = Lambdas('gsbot_gsuite.lambdas.gdocs', memory=3008)
 
-    #def test_update(self):
-        path = Files.path_combine('.','../..')
-        self.lambda_gdocs.update_with_src(path)
+        #path = Files.path_combine('.','../..')
+        #self.lambda_gdocs.update_with_src(path)
 
 
     def test_invoke_directly(self):

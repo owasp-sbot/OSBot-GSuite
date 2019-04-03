@@ -1,7 +1,8 @@
 from unittest import TestCase
 
-from pbx_gs_python_utils.lambdas.gs.lambda_slides import run
 from pbx_gs_python_utils.utils.aws.Lambdas import Lambdas
+
+from gsbot_gsuite.lambdas.slides import run
 
 
 class Test_Lambda_lambda_slides(TestCase):
