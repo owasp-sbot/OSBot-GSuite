@@ -63,34 +63,35 @@ class Create_Code_Build:
 
     def create_policies(self):
         cloud_watch_arn = "arn:aws:logs:eu-west-2:244560807427:log-group:/aws/codebuild/{0}:log-stream:*".format(self.project_name)
-        policies = {"Cloud-Watch-Policy": { "Version": "2012-10-17",
-                                            "Statement": [{   "Sid": "GsBotPolicy",
-                                                              "Effect": "Allow",
-                                                              "Action": [ "logs:CreateLogGroup"  ,
-                                                                          "logs:CreateLogStream" ,
-                                                                          "logs:PutLogEvents"   ],
-                                                              "Resource": [ cloud_watch_arn ]}]},
-                    "Secret-Manager": {
-                                            "Version"  : "2012-10-17",
-                                            "Statement": [{   "Sid"    : "GsBotPolicy",
-                                                              "Effect" : "Allow",
-                                                              "Action" : [ "secretsmanager:GetSecretValue","secretsmanager:DescribeSecret"],
-                                                              "Resource": ["arn:aws:secretsmanager:eu-west-2:244560807427:secret:slack-gs-bot-*",
-                                                                           "arn:aws:secretsmanager:eu-west-2:244560807427:secret:elastic_gsuite_data-*"]}]},
-                    "Download_Image": {     "Version": "2012-10-17",
-                                            "Statement": [{   "Effect": "Allow",
-                                                              "Principal": {
-                                                                  "AWS": "arn:aws:iam::244560807427:root"
-                                                              },
-                                                              "Action": [   "ecr:GetAuthorizationToken",
-                                                                            "ecr:BatchCheckLayerAvailability",
-                                                                            "ecr:GetDownloadUrlForLayer",
-                                                                            "ecr:GetRepositoryPolicy",
-                                                                            "ecr:DescribeRepositories",
-                                                                            "ecr:ListImages",
-                                                                            "ecr:DescribeImages",
-                                                                            "ecr:BatchGetImage"],
-                                                              "Resource": "*"}]}}
+        policies = {"Cloud-Watch-Policy"     : { "Version": "2012-10-17",
+                                                 "Statement": [{   "Sid": "GsBotPolicy",
+                                                                   "Effect": "Allow",
+                                                                   "Action": [ "logs:CreateLogGroup"  ,
+                                                                               "logs:CreateLogStream" ,
+                                                                               "logs:PutLogEvents"   ],
+                                                                   "Resource": [ cloud_watch_arn ]}]},
+                    "Secret-Manager"         : { "Version"  : "2012-10-17",
+                                                 "Statement": [{   "Sid"    : "GsBotPolicy",
+                                                                   "Effect" : "Allow",
+                                                                   "Action" : [ "secretsmanager:GetSecretValue","secretsmanager:DescribeSecret"],
+                                                                   "Resource": ["arn:aws:secretsmanager:eu-west-2:244560807427:secret:slack-gs-bot-*",
+                                                                                "arn:aws:secretsmanager:eu-west-2:244560807427:secret:elastic_gsuite_data-*"]}]},
+                    "Download_Image"         : { "Version": "2012-10-17",
+                                                 "Statement": [{   "Effect": "Allow",
+                                                                   #"Principal": { "AWS": "arn:aws:iam::244560807427:root"},
+                                                                   "Action": [   "ecr:GetAuthorizationToken",
+                                                                                 "ecr:BatchCheckLayerAvailability",
+                                                                                 "ecr:GetDownloadUrlForLayer",
+                                                                                 "ecr:GetRepositoryPolicy",
+                                                                                 "ecr:DescribeRepositories",
+                                                                                 "ecr:ListImages",
+                                                                                 "ecr:DescribeImages",
+                                                                                 "ecr:BatchGetImage"],
+                                                                   "Resource": "*"}]},
+                    "Invoke_Lambda_Functions": { "Version": "2012-10-17",
+                                                 "Statement": [ { "Effect": "Allow",
+                                                                  "Action": "lambda:InvokeFunction",
+                                                                  "Resource": "arn:aws:lambda:*:*:function:*" }]}}
 
         policies_arns  = list(self.code_build.iam.role_policies().values())
         policies_names = list(self.code_build.iam.role_policies().keys())
