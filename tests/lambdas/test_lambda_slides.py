@@ -1,7 +1,5 @@
+import unittest
 from unittest import TestCase
-
-from pbx_gs_python_utils.utils.Files        import Files
-from pbx_gs_python_utils.utils.Dev          import Dev
 from pbx_gs_python_utils.utils.aws.Lambdas  import Lambdas
 
 from gsbot_gsuite.lambdas.slides import run
