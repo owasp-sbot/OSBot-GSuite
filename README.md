@@ -1,2 +1,4 @@
 # gsbot-gsuite
 GSbot Lambda methods for GSuite
+
+![](https://codebuild.eu-west-2.amazonaws.com/badges?uuid=eyJlbmNyeXB0ZWREYXRhIjoieG9SSXRyaEtaT2VzbTVGWVpEVitXeHVoMTAzYmVPYlNVSUZQTUFyMjl5Z255MFlZMFZDaDNhVUd2NW40SGt1dW1seUxHdiswbCtmWitFVzNmMVBDRVhrPSIsIml2UGFyYW1ldGVyU3BlYyI6Im16VWJCR25OZ090ZFJ5WVMiLCJtYXRlcmlhbFNldFNlcmlhbCI6MX0%3D&branch=master)
