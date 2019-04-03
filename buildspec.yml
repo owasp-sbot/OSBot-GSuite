@@ -3,6 +3,7 @@ phases:
   install:
     commands:
       - echo "here"
+      - pip3 install googleapiclient
       #- pip3 install pbx_gs_python_utils
       #- pip3 install python-coveralls pytest-cov==2.5.0
       #- pip3 install boto3 pytest
