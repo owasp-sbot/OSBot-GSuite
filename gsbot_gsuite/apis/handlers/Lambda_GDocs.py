@@ -1,6 +1,6 @@
-from pbx_gs_python_utils.gsuite.commands.GDocs_Commands     import GDocs_Commands
 from pbx_gs_python_utils.utils.Lambdas_Helpers              import log_to_elk
 from pbx_gs_python_utils.utils.slack.Slack_Commands_Helper  import Slack_Commands_Helper
+from gsbot_gsuite.apis.commands.GDocs_Commands              import GDocs_Commands
 
 
 class Lambda_GDocs:

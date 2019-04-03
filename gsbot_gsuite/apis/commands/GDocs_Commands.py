@@ -6,7 +6,7 @@ from pbx_gs_python_utils.utils.Lambdas_Helpers  import slack_message
 from pbx_gs_python_utils.utils.aws.Lambdas      import Lambdas
 
 
-GDocs_Commands_version = 'v0.21'
+GDocs_Commands_version = 'v0.22'
 
 class GDocs_Commands:
     gsuite_secret_id = 'gsuite_gsbot_user'
