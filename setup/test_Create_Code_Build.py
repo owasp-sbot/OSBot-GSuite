@@ -91,7 +91,14 @@ class Create_Code_Build:
                     "Invoke_Lambda_Functions": { "Version": "2012-10-17",
                                                  "Statement": [ { "Effect": "Allow",
                                                                   "Action": "lambda:InvokeFunction",
-                                                                  "Resource": "arn:aws:lambda:*:*:function:*" }]}}
+                                                                  "Resource": "arn:aws:lambda:*:*:function:*" }]},
+                    "Secret-Manager"        : {
+                                                "Version"  : "2012-10-17",
+                                                "Statement": [{   "Effect"  : "Allow",
+                                                                  "Action"  : [ "secretsmanager:GetSecretValue","secretsmanager:DescribeSecret"          ],
+                                                                  "Resource": [ "arn:aws:secretsmanager:eu-west-2:244560807427:secret:slack-gs-bot-*"     ,
+                                                                                "arn:aws:secretsmanager:eu-west-2:244560807427:secret:elastic*"           ,
+                                                                                "arn:aws:secretsmanager:eu-west-2:244560807427:secret:gsuite*"        ]}]}}
 
         policies_arns  = list(self.code_build.iam.role_policies().values())
         policies_names = list(self.code_build.iam.role_policies().keys())
