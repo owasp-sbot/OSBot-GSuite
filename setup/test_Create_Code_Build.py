@@ -32,8 +32,7 @@ class Create_Code_Build:
             self.iam.role_create(self.assume_policy)                     # create role
             assert self.iam.role_info().get('Arn') == self.service_role  # confirm the role exists
             sleep(1)
-            self.code_build.project_create(self.project_repo,
-                                           self.service_role)            #  in a non-deterministic way, this sometimes throws the error: CodeBuild is not authorized to perform: sts:AssumeRole
+            self.create_project()  # use this version
 
     def teardown(self, delete_on_teardown=False):
 
@@ -44,6 +43,23 @@ class Create_Code_Build:
             self.iam.role_delete()
             assert self.code_build.project_exists() is False
             assert self.iam.role_exists() is False
+
+    def create_project(self):
+        kvargs = {
+            'name'        : self.project_name,
+            'source'      : { 'type'                   : 'GITHUB',
+                           'location'                  : self.project_repo                 },
+            'artifacts'   : {'type'                    : 'NO_ARTIFACTS'                    },
+            'environment' : {'type'                    : 'LINUX_CONTAINER'                  ,
+                            'image'                    : '244560807427.dkr.ecr.eu-west-2.amazonaws.com/gs-docker-codebuild:latest'     ,
+                            'computeType'              : 'BUILD_GENERAL1_LARGE'             ,
+                             #'imagePullCredentialsType': 'SERVICE_ROLE' # this is not working (and it should)
+                             },
+                            #'privilegedMode' : True                              },
+            'serviceRole' : self.service_role
+        }
+
+        return self.code_build.codebuild.create_project(**kvargs)
 
     def create_policies(self):
         cloud_watch_arn = "arn:aws:logs:eu-west-2:244560807427:log-group:/aws/codebuild/{0}:log-stream:*".format(self.project_name)
@@ -120,3 +136,45 @@ class test_Create_Code_Build(TestCase):
         Dev.pprint(result)
         #Dev.pprint(result.get('phases')[2].get('contexts')[0].get('message') )
 
+    def test_get_project_details(self):
+        Dev.pprint(self.api.code_build.project_info())
+
+  #       { 'arn': 'arn:aws:codebuild:eu-west-2:244560807427:project/gsbot-gsuite',
+  # 'artifacts': {'type': 'NO_ARTIFACTS'},
+  # 'badge': {'badgeEnabled': False},
+  # 'cache': {'type': 'NO_CACHE'},
+  # 'created': datetime.datetime(2019, 4, 3, 21, 17, 11, 626000, tzinfo=tzlocal()),
+  # 'encryptionKey': 'arn:aws:kms:eu-west-2:244560807427:alias/aws/s3',
+  # 'environment': { 'computeType': 'BUILD_GENERAL1_LARGE',
+  #                  'environmentVariables': [],
+  #                  'image': '244560807427.dkr.ecr.eu-west-2.amazonaws.com/gs-docker-codebuild:latest',
+  #                  'privilegedMode': False,
+  #                  'type': 'LINUX_CONTAINER'},
+  # 'lastModified': datetime.datetime(2019, 4, 3, 21, 17, 11, 626000, tzinfo=tzlocal()),
+  # 'name': 'gsbot-gsuite',
+  # 'serviceRole': 'arn:aws:iam::244560807427:role/gsbot-gsuite',
+  # 'source': { 'insecureSsl': False,
+  #             'location': 'https://github.com/pbx-gs/gsbot-gsuite',
+  #             'type': 'GITHUB'},
+  # 'tags': [],
+  # 'timeoutInMinutes': 60}
+
+  # { 'arn': 'arn:aws:codebuild:eu-west-2:244560807427:project/gsbot-gsuite',
+  # 'artifacts': {'type': 'NO_ARTIFACTS'},
+  # 'badge': {'badgeEnabled': False},
+  # 'cache': {'type': 'NO_CACHE'},
+  # 'created': datetime.datetime(2019, 4, 3, 21, 17, 11, 626000, tzinfo=tzlocal()),
+  # 'encryptionKey': 'arn:aws:kms:eu-west-2:244560807427:alias/aws/s3',
+  # 'environment': { 'computeType': 'BUILD_GENERAL1_SMALL',
+  #                  'environmentVariables': [],
+  #                  'image': '244560807427.dkr.ecr.eu-west-2.amazonaws.com/gs-docker-codebuild:latest',
+  #                  'privilegedMode': False,
+  #                  'type': 'LINUX_CONTAINER'},
+  # 'lastModified': datetime.datetime(2019, 4, 3, 21, 21, 15, 225000, tzinfo=tzlocal()),
+  # 'name': 'gsbot-gsuite',
+  # 'serviceRole': 'arn:aws:iam::244560807427:role/gsbot-gsuite',
+  # 'source': { 'insecureSsl': False,
+  #             'location': 'https://github.com/pbx-gs/gsbot-gsuite',
+  #             'type': 'GITHUB'},
+  # 'tags': [],
+  # 'timeoutInMinutes': 60}
