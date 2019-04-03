@@ -13,7 +13,7 @@ phases:
 
   post_build:
     commands:
-      - cd tests ; pytest
+      - cd tests ; pytest -v
       #- echo "*** In post_build phase ***"
       #- cd tests && pytest -v --cov
       #- cp tests/.coverage .
