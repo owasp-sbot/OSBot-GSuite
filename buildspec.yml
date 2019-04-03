@@ -14,6 +14,7 @@ phases:
   post_build:
     commands:
       - cd tests ; pytest -v
-      - cd tests && pytest -v --cov
-      - cp tests/.coverage .
-      - coveralls
+      # coveralls seem to need git installed
+      #- cd tests && pytest -v --cov
+      #- cp tests/.coverage .
+      #- coveralls
