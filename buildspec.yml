@@ -1,0 +1,21 @@
+version: 0.1
+phases:
+  install:
+    commands:
+      - pip3 install pbx_gs_python_utils
+      - pip3 install python-coveralls pytest-cov==2.5.0
+      - pip3 install boto3 pytest
+      #- pip3 install elasticsearch
+      - git checkout master
+      - export COVERALLS_SERVICE_NAME=aws_code_build
+
+
+  post_build:
+    commands:
+      - echo "*** In post_build phase ***"
+      #- cd tests && pytest -v --cov
+      #- cp tests/.coverage .
+      #- coveralls
+
+    #finally:
+    #  - echo "*** After post_build phase ***"
