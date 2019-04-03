@@ -1,13 +1,17 @@
 from unittest import TestCase
 
-from pbx_gs_python_utils.utils.aws.Lambdas import Lambdas
+from pbx_gs_python_utils.utils.Files        import Files
+from pbx_gs_python_utils.utils.Dev          import Dev
+from pbx_gs_python_utils.utils.aws.Lambdas  import Lambdas
 
 from gsbot_gsuite.lambdas.slides import run
 
 
 class Test_Lambda_lambda_slides(TestCase):
     def setUp(self):
-        self.lambda_graph = Lambdas('pbx_gs_python_utils.lambdas.gs.lambda_slides', memory=3008).create()
+        self.lambda_graph = Lambdas('gsbot_gsuite.lambdas.slides', memory=3008)
+        #path = Files.path_combine('.','../..')
+        #self.lambda_graph.update_with_src(path)
 
     # def test_update(self):
     #     self.lambda_graph.update_with_lib()
