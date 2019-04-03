@@ -1,3 +1,4 @@
+import unittest
 from unittest import TestCase
 
 from pbx_gs_python_utils.utils.Dev import Dev
@@ -15,12 +16,9 @@ class test_Lambda_lambda_gdocs(TestCase):
         #path = Files.path_combine('.','../..')
         #self.lambda_gdocs.update_with_src(path)
 
-
+    @unittest.skip('needs gmail dependency and s3 permissions are not defined')
     def test_invoke_directly(self):
         response = run({ 'data':{}},{})
-        Dev.pprint('*******')
-        Dev.pprint(response)
-        Dev.pprint('------')
         assert response[0] == '*Here are the `GDocs_Commands` commands available:*'
 
     def test_invoke___with_no_command(self):
