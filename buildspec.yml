@@ -2,8 +2,7 @@ version: 0.1
 phases:
   install:
     commands:
-      - echo "here"
-      - pip3 install google-api-python-client
+      - echo "**** Starting build"
       #- pip3 install pbx_gs_python_utils
       #- pip3 install python-coveralls pytest-cov==2.5.0
       #- pip3 install boto3 pytest
