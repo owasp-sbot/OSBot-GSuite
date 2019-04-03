@@ -15,9 +15,9 @@ phases:
     commands:
       - cd tests ; pytest -v
       #- echo "*** In post_build phase ***"
-      #- cd tests && pytest -v --cov
-      #- cp tests/.coverage .
-      #- coveralls
+      cd tests && pytest -v --cov
+      cp tests/.coverage .
+      coveralls
 
     #finally:
     #  - echo "*** After post_build phase ***"
