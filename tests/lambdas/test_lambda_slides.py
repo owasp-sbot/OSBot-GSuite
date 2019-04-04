@@ -2,6 +2,7 @@ import unittest
 from unittest import TestCase
 from pbx_gs_python_utils.utils.aws.Lambdas  import Lambdas
 
+from gsbot_gsuite import version_gsbot_gsuite
 from gsbot_gsuite.lambdas.slides import run
 
 
@@ -22,4 +23,4 @@ class Test_Lambda_lambda_slides(TestCase):
         assert self.lambda_graph.invoke({ 'data': {}})[0] == '*Here are the `Slides_Commands` commands available:*'
 
     def test_version(self):
-        assert self.lambda_graph.invoke({'data': {},'params':['version']})[0] == 'v0.22'
+        assert 'v0.' in self.lambda_graph.invoke({'data': {},'params':['version']})[0]

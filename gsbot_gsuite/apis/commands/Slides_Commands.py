@@ -2,10 +2,9 @@ from time import time
 
 from pbx_gs_python_utils.utils.Lambdas_Helpers      import slack_message
 
+from gsbot_gsuite import version_gsbot_gsuite
 from gsbot_gsuite.apis.create_slides.Project_Slides              import Project_Slides
 from gsbot_gsuite.apis.create_slides.Slides_for_Projects         import Slides_for_Projects
-
-Slides_Commands_version = 'v0.22'
 
 class Slides_Commands:
 
@@ -101,4 +100,4 @@ class Slides_Commands:
 
     @staticmethod
     def version(team_id, channel, params):
-        return Slides_Commands_version
+        return version_gsbot_gsuite

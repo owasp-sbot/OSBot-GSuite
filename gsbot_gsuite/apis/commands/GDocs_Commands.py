@@ -5,8 +5,8 @@ from pbx_gs_python_utils.gsuite.GSlides         import GSlides
 from pbx_gs_python_utils.utils.Lambdas_Helpers  import slack_message
 from pbx_gs_python_utils.utils.aws.Lambdas      import Lambdas
 
+from gsbot_gsuite import version_gsbot_gsuite
 
-GDocs_Commands_version = 'v0.22'
 
 class GDocs_Commands:
     gsuite_secret_id = 'gsuite_gsbot_user'
@@ -60,4 +60,4 @@ class GDocs_Commands:
 
     @staticmethod
     def version(team_id=None, channel=None, params=None):
-        return GDocs_Commands_version,[]
+        return version_gsbot_gsuite,[]
