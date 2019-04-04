@@ -4,9 +4,9 @@ phases:
     commands:
       - echo "**** Starting build"
       - echo "**** Running tests"
-      - cd tests ; pytest -v -s
+      #- cd tests ; pytest -v -s
       - echo "**** Deploying Lambda"
-
+      - cd deploy ; pytest -v -s
 
 
 #  post_build:
