@@ -1,15 +1,16 @@
 import unittest
 from unittest import TestCase
 
-from osbot_aws.apis.Lambda import Lambda
 from pbx_gs_python_utils.utils.Dev import Dev
 from pbx_gs_python_utils.utils.Files import Files
 from pbx_gs_python_utils.utils.Lambdas_Helpers import slack_message
 
+from osbot_gsuite.Deploy import Deploy
 
-class test_Update_Lambda_Functions(TestCase):
 
-    def test_update_lambda_functions(self):
+class test_Deploy_Lambda_Functions(TestCase):
+
+    def test_deploy_lambda_functions(self):
         code_path = Files.path_combine('.','..')
 
         targets = [
@@ -19,10 +20,10 @@ class test_Update_Lambda_Functions(TestCase):
                    ]
         result = ""
         for target in targets:
-            Lambda(target).update_with_src(code_path)
+            Deploy(target).deploy()
             result += " • {0}\n".format(target)
 
-        text        = ":hotsprings: [gsbot-gsuite] updated lambda functions"
+        text        = ":hotsprings: [osbot-gsuite] updated lambda functions"
         attachments = [{'text': result, 'color': 'good'}]
         slack_message(text, attachments)  # gs-bot-tests
         Dev.pprint(text, attachments)
