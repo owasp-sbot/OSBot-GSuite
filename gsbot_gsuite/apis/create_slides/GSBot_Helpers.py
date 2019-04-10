@@ -1,8 +1,9 @@
 import base64
 import json
+
+from osbot_aws.apis.Lambda import Lambda
 from   pbx_gs_python_utils.utils.Elastic_Search import Elastic_Search
 from   pbx_gs_python_utils.utils.Files          import Files
-from   pbx_gs_python_utils.utils.aws.Lambdas    import Lambdas
 
 
 class GSBot_Helper:
@@ -15,7 +16,7 @@ class GSBot_Helper:
         return Elastic_Search()._setup_Elastic_on_cloud_via_AWS_Secret(index, secrets_elastic)
 
     def create_graph(self, start, direction, depth,view=None):
-        lambda_graph = Lambdas('pbx_gs_python_utils.lambdas.gs.elastic_jira')
+        lambda_graph = Lambda('pbx_gs_python_utils.lambdas.gs.elastic_jira')
 
         payload = { "params": ['links', start, direction, depth,view] }
         result = lambda_graph.invoke(payload)
@@ -23,7 +24,7 @@ class GSBot_Helper:
         return data
 
     def expand_graph(self, graph_name, depth,links_path):
-        lambda_graph = Lambdas('lambdas.gsbot.gsbot_graph')
+        lambda_graph = Lambda('lambdas.gsbot.gsbot_graph')
 
         payload = { 'data': {}, "params": ['expand', graph_name, depth, links_path]}
         result = lambda_graph.invoke(payload)
@@ -66,7 +67,7 @@ class GSBot_Helper:
 
     def get_png_from_elk_dashboard(self, jira_key):
         png_file = '/tmp/puml_elk_dashboard_{0}.png'.format(jira_key)
-        lambda_browser = Lambdas('browser.lambda_browser')
+        lambda_browser = Lambda('browser.lambda_browser')
 
         payload = {"params": ['elk', 'dashboard_project', jira_key]}
         png_data = lambda_browser.invoke(payload)
@@ -77,7 +78,7 @@ class GSBot_Helper:
     def get_png_from_browser_risks(self, risks):
         #png_file = '/tmp/puml_browser_risks_{0}.png'.format(jira_key)
         png_file = Files.temp_file(".png")
-        lambda_browser = Lambdas('lambdas.browser.lambda_browser')
+        lambda_browser = Lambda('lambdas.browser.lambda_browser')
 
         payload = {"params": ['risks', risks]}
         png_data = lambda_browser.invoke(payload)
@@ -88,7 +89,7 @@ class GSBot_Helper:
 
 
     def puml_to_png(self, puml, target_file):
-        puml_to_png = Lambdas('utils.puml_to_png')
+        puml_to_png = Lambda('utils.puml_to_png')
         png_data = puml_to_png.invoke({"puml": puml})
 
         with open(target_file, "wb") as fh:

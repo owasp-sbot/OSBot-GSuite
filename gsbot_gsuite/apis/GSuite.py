@@ -7,10 +7,11 @@ from oauth2client.tools        import argparser
 from oauth2client.tools        import run_flow
 
 from googleapiclient.discovery import build
+from osbot_aws.apis.Secrets import Secrets
 
 from pbx_gs_python_utils.utils.Dev import Dev
 from pbx_gs_python_utils.utils.Files               import Files
-from pbx_gs_python_utils.utils.aws.secrets         import Secrets
+
 
 
 class GSuite:

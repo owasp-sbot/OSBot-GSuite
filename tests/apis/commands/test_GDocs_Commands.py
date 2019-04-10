@@ -7,7 +7,7 @@ from gsbot_gsuite.apis.commands.GDocs_Commands import GDocs_Commands
 class test_GDocs_Commands(TestCase):
 
     # def test_update_lambda(self):
-    #     Lambdas('gs.lambda_gdocs').update_with_src()
+    #     Lambda('gs.lambda_gdocs').update_with_src()
 
     def test_list(self):
         params = []

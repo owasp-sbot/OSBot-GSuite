@@ -1,8 +1,9 @@
 from googleapiclient.http import MediaFileUpload
 
-from pbx_gs_python_utils.gsuite.GSuite import GSuite
 from pbx_gs_python_utils.utils.Dev      import Dev
 from pbx_gs_python_utils.utils.Files    import Files
+
+from gsbot_gsuite.apis.GSuite import GSuite
 
 
 class GDrive:

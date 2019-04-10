@@ -3,8 +3,6 @@ from unittest import TestCase
 
 from pbx_gs_python_utils.utils.Dev import Dev
 from pbx_gs_python_utils.utils.Files import Files
-from pbx_gs_python_utils.utils.Lambdas_Helpers import slack_message
-from pbx_gs_python_utils.utils.aws.Lambdas import Lambdas
 
 
 class test_Update_Lambda_Functions(TestCase):
@@ -19,7 +17,7 @@ class test_Update_Lambda_Functions(TestCase):
                    ]
         result = ""
         for target in targets:
-            Lambdas(target).update_with_src(code_path)
+            Lambda(target).update_with_src(code_path)
             result += " • {0}\n".format(target)
 
         text        = ":hotsprings: [gsbot-gsuite] updated lambda functions"

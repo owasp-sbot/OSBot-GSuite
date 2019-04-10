@@ -1,11 +1,12 @@
 import base64
 
-from pbx_gs_python_utils.gsuite.GDrive          import GDrive
-from pbx_gs_python_utils.gsuite.GSlides         import GSlides
+from osbot_aws.apis.Lambda import Lambda
 from pbx_gs_python_utils.utils.Lambdas_Helpers  import slack_message
-from pbx_gs_python_utils.utils.aws.Lambdas      import Lambdas
+
 
 from gsbot_gsuite import version_gsbot_gsuite
+from gsbot_gsuite.apis.GDrive import GDrive
+from gsbot_gsuite.apis.GSlides import GSlides
 
 
 class GDocs_Commands:
@@ -54,7 +55,7 @@ class GDocs_Commands:
             }
 
             slack_message("creating pdf for file: `{0}`".format(file_id),[],channel,team_id)
-            Lambdas('utils.pdf_to_slack').invoke(payload)
+            Lambda('utils.pdf_to_slack').invoke(payload)
 
         return None,None
 

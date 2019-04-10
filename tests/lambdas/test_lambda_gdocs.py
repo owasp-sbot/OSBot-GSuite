@@ -1,6 +1,7 @@
 import unittest
 from unittest import TestCase
-from pbx_gs_python_utils.utils.aws.Lambdas import Lambdas
+
+from osbot_aws.apis.Lambda import Lambda
 
 from gsbot_gsuite import version_gsbot_gsuite
 from gsbot_gsuite.lambdas.gdocs import run
@@ -8,7 +9,7 @@ from gsbot_gsuite.lambdas.gdocs import run
 
 class test_Lambda_lambda_gdocs(TestCase):
     def setUp(self):
-        self.lambda_gdocs = Lambdas('gsbot_gsuite.lambdas.gdocs', memory=3008)
+        self.lambda_gdocs = Lambda('gsbot_gsuite.lambdas.gdocs')
 
     @unittest.skip('needs gmail dependency and s3 permissions are not defined')
     def test_invoke_directly(self):

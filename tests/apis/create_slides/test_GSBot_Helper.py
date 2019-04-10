@@ -31,7 +31,7 @@ class test_GSBot_Helpers(TestCase):
         assert Files.exists(result)
 
     # def test___run_lambda(self):
-    #     lambda_graph = Lambdas('pbx_gs_python_utils.lambdas.gs.elastic_jira')
+    #     lambda_graph = Lambda('pbx_gs_python_utils.lambdas.gs.elastic_jira')
     #
     #     payload = {
     #         "params": ['links','IA-386','down','15']

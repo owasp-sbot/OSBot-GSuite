@@ -1,5 +1,5 @@
-from pbx_gs_python_utils.gsuite.GDrive import GDrive
-from pbx_gs_python_utils.gsuite.GSuite import GSuite
+from gsbot_gsuite.apis.GDrive import GDrive
+from gsbot_gsuite.apis.GSuite import GSuite
 
 
 class GSheets:

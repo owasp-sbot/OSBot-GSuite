@@ -21,8 +21,6 @@ class Method_Hooks:
 Method_Hooks()
 
 from pbx_gs_python_utils.utils.Dev import Dev
-from pbx_gs_python_utils.utils.Json import Json
-from pbx_gs_python_utils.utils.aws.Lambdas import Lambdas
 
 from gsbot_gsuite.apis.sheets.API_Jira_Sheets_Sync import API_Jira_Sheets_Sync
 
@@ -161,8 +159,8 @@ class Test_API_Jira_Sheets_Sync(TestCase):
     def test_diff_sheet         (self): Dev.pprint(self.api_sync.diff_sheet         ())
     def test_sync_sheet         (self): Dev.pprint(self.api_sync.sync_sheet         ())
 
-    def test__lambda_update(self):
-        Lambdas('pbx_gs_python_utils.lambdas.gs.elastic_jira').update_with_src()
+    # def test__lambda_update(self):
+    #     Lambda('pbx_gs_python_utils.lambdas.gs.elastic_jira').update_with_src()
 
 
 

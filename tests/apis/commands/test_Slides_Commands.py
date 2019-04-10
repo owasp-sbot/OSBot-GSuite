@@ -10,7 +10,7 @@ from gsbot_gsuite.apis.commands.Slides_Commands import Slides_Commands
 class test_Slides_Commands(TestCase):
 
     #def test_update_lambda(self):
-    #    Lambdas('pbx_gs_python_utils.gs.lambda_slides').update_with_src()
+    #    Lambda('pbx_gs_python_utils.gs.lambda_slides').update_with_src()
 
     def test_gs_functions(self):
         result = Slides_Commands.gs_functions('T7F3AUXGV', 'DDKUZTK6X', [])
