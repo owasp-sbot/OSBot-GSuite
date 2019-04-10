@@ -9,7 +9,7 @@ def run(event, context):
         load_dependency("elastic-slack")                              # load dependency (download and unzip if first run)
         load_dependency('requests')
 
-        from gsbot_gsuite.apis.handlers.Lambda_GDocs import Lambda_GDocs
+        from osbot_gsuite.apis.handlers.Lambda_GDocs import Lambda_GDocs
         return Lambda_GDocs().handle_lambda_event(event)                      # invoke lambda handler from Lambda_Slides class
         return "200 OK"
 

@@ -1,8 +1,8 @@
 
 
-from gsbot_gsuite.apis.create_slides.GSBot_Helpers       import GSBot_Helper
-from gsbot_gsuite.apis.create_slides.GSBot_to_GDrive     import GSBot_to_GDrive
-from gsbot_gsuite.apis.create_slides.Slides_for_Projects import Slides_for_Projects
+from osbot_gsuite.apis.create_slides.GSBot_Helpers       import GSBot_Helper
+from osbot_gsuite.apis.create_slides.GSBot_to_GDrive     import GSBot_to_GDrive
+from osbot_gsuite.apis.create_slides.Slides_for_Projects import Slides_for_Projects
 from pbx_gs_python_utils.utils.Dev          import Dev
 from pbx_gs_python_utils.utils.Misc         import Misc
 

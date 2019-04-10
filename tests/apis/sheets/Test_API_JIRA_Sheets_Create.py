@@ -2,7 +2,7 @@ from unittest import TestCase
 
 from pbx_gs_python_utils.utils.Dev import Dev
 
-from gsbot_gsuite.apis.sheets.API_Jira_Sheets_Create import API_Jira_Sheets_Create
+from osbot_gsuite.apis.sheets.API_Jira_Sheets_Create import API_Jira_Sheets_Create
 
 
 class Test_API_JIRA_Sheets_Create(TestCase):

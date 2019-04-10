@@ -3,13 +3,13 @@ from unittest import TestCase
 
 from osbot_aws.apis.Lambda import Lambda
 
-from gsbot_gsuite import version_gsbot_gsuite
-from gsbot_gsuite.lambdas.gdocs import run
+from osbot_gsuite import version_osbot_gsuite
+from osbot_gsuite.lambdas.gdocs import run
 
 
 class test_Lambda_lambda_gdocs(TestCase):
     def setUp(self):
-        self.lambda_gdocs = Lambda('gsbot_gsuite.lambdas.gdocs')
+        self.lambda_gdocs = Lambda('osbot_gsuite.lambdas.gdocs')
 
     @unittest.skip('needs gmail dependency and s3 permissions are not defined')
     def test_invoke_directly(self):

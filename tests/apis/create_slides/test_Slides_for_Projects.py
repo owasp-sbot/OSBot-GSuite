@@ -3,7 +3,7 @@ sys.path.append('..')
 import unittest
 from   unittest import TestCase
 
-from gsbot_gsuite.apis.create_slides.Slides_for_Projects import Slides_for_Projects
+from osbot_gsuite.apis.create_slides.Slides_for_Projects import Slides_for_Projects
 from pbx_gs_python_utils.utils.Dev          import Dev
 from pbx_gs_python_utils.utils.Misc         import Misc
 

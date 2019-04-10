@@ -13,8 +13,8 @@ class test_Update_Lambda_Functions(TestCase):
         code_path = Files.path_combine('.','..')
 
         targets = [
-                    'gsbot_gsuite.lambdas.gdocs'    ,   #   gdocs.py    Lambda_GDocs    GDocs_Commands
-                    'gsbot_gsuite.lambdas.slides'   ,   #   slides.py   Lambda_Slides   Slides_Commands
+                    'osbot_gsuite.lambdas.gdocs'    ,   #   gdocs.py    Lambda_GDocs    GDocs_Commands
+                    'osbot_gsuite.lambdas.slides'   ,   #   slides.py   Lambda_Slides   Slides_Commands
 
                    ]
         result = ""

@@ -100,8 +100,8 @@ class Create_Code_Build:
                                                                                 "arn:aws:secretsmanager:eu-west-2:244560807427:secret:elastic*"           ,
                                                                                 "arn:aws:secretsmanager:eu-west-2:244560807427:secret:gsuite*"        ]}]},
                     "Update_Lambda"         : { "Version"  : "2012-10-17",
-                                                "Statement": [ {    "Effect": "Allow", "Action" : ["s3:PutObject"         ], "Resource": ["arn:aws:s3:::gs-lambda-tests/dinis/lambdas/gsbot_gsuite_lambdas_gdocs.zip"] },
-                                                               {    "Effect": "Allow", "Action" : ["lambda:CreateFunction"], "Resource": ["arn:aws:lambda:eu-west-2:244560807427:function:gsbot_gsuite_lambdas_gdocs"] } ]}}
+                                                "Statement": [ {    "Effect": "Allow", "Action" : ["s3:PutObject"         ], "Resource": ["arn:aws:s3:::gs-lambda-tests/dinis/lambdas/osbot_gsuite_lambdas_gdocs.zip"] },
+                                                               {    "Effect": "Allow", "Action" : ["lambda:CreateFunction"], "Resource": ["arn:aws:lambda:eu-west-2:244560807427:function:osbot_gsuite_lambdas_gdocs"] } ]}}
 
         policies_arns  = list(self.code_build.iam.role_policies().values())
         policies_names = list(self.code_build.iam.role_policies().keys())

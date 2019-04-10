@@ -2,7 +2,7 @@ import sys ; sys.path.append('..')
 
 from unittest import TestCase
 
-from gsbot_gsuite.apis.commands.GDocs_Commands import GDocs_Commands
+from osbot_gsuite.apis.commands.GDocs_Commands import GDocs_Commands
 
 class test_GDocs_Commands(TestCase):
 

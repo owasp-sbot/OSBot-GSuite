@@ -1,7 +1,7 @@
-from gsbot_gsuite.apis.GSheets                          import GSheets
-from gsbot_gsuite.apis.GSlides                          import GSlides
-from gsbot_gsuite.apis.create_slides.GSBot_Helpers      import GSBot_Helper
-from gsbot_gsuite.apis.create_slides.GSBot_to_GDrive    import GSBot_to_GDrive
+from osbot_gsuite.apis.GSheets                          import GSheets
+from osbot_gsuite.apis.GSlides                          import GSlides
+from osbot_gsuite.apis.create_slides.GSBot_Helpers      import GSBot_Helper
+from osbot_gsuite.apis.create_slides.GSBot_to_GDrive    import GSBot_to_GDrive
 from pbx_gs_python_utils.utils.Elastic_Search           import Elastic_Search
 
 

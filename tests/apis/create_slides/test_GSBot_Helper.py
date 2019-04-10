@@ -2,7 +2,7 @@ import sys ; sys.path.append('..')
 
 from unittest import TestCase
 from pbx_gs_python_utils.utils.Files import Files
-from gsbot_gsuite.apis.create_slides.GSBot_Helpers import GSBot_Helper
+from osbot_gsuite.apis.create_slides.GSBot_Helpers import GSBot_Helper
 
 
 class test_GSBot_Helpers(TestCase):

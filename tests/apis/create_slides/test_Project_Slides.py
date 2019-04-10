@@ -4,7 +4,7 @@ import unittest
 from unittest import TestCase
 
 from pbx_gs_python_utils.utils.Dev                  import Dev
-from gsbot_gsuite.apis.create_slides.Project_Slides import Project_Slides
+from osbot_gsuite.apis.create_slides.Project_Slides import Project_Slides
 
 
 @unittest.skip('review and move long running into separate class')

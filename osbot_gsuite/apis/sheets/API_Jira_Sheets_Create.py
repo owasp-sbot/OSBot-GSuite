@@ -1,6 +1,6 @@
 from pbx_gs_python_utils.utils.Misc                    import Misc
 
-from gsbot_gsuite.apis.sheets.API_Jira_Sheets_Sync import API_Jira_Sheets_Sync
+from osbot_gsuite.apis.sheets.API_Jira_Sheets_Sync import API_Jira_Sheets_Sync
 
 
 class API_Jira_Sheets_Create(API_Jira_Sheets_Sync):

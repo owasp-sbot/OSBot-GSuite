@@ -4,9 +4,9 @@ from osbot_aws.apis.Lambda import Lambda
 from pbx_gs_python_utils.utils.Lambdas_Helpers  import slack_message
 
 
-from gsbot_gsuite import version_gsbot_gsuite
-from gsbot_gsuite.apis.GDrive import GDrive
-from gsbot_gsuite.apis.GSlides import GSlides
+from osbot_gsuite import version_osbot_gsuite
+from osbot_gsuite.apis.GDrive import GDrive
+from osbot_gsuite.apis.GSlides import GSlides
 
 
 class GDocs_Commands:
@@ -61,4 +61,4 @@ class GDocs_Commands:
 
     @staticmethod
     def version(team_id=None, channel=None, params=None):
-        return version_gsbot_gsuite,[]
+        return version_osbot_gsuite,[]

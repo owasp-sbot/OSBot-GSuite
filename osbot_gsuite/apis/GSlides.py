@@ -1,7 +1,7 @@
 from pbx_gs_python_utils.utils.Misc import Misc
 
-from gsbot_gsuite.apis.GDrive import GDrive
-from gsbot_gsuite.apis.GSuite import GSuite
+from osbot_gsuite.apis.GDrive import GDrive
+from osbot_gsuite.apis.GSuite import GSuite
 
 
 class GSlides:

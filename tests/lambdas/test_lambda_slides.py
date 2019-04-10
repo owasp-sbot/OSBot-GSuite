@@ -3,13 +3,13 @@ from unittest import TestCase
 
 from osbot_aws.apis.Lambda import Lambda
 
-from gsbot_gsuite import version_gsbot_gsuite
-from gsbot_gsuite.lambdas.slides import run
+from osbot_gsuite import version_osbot_gsuite
+from osbot_gsuite.lambdas.slides import run
 
 
 class Test_Lambda_lambda_slides(TestCase):
     def setUp(self):
-        self.lambda_graph = Lambda('gsbot_gsuite.lambdas.slides')
+        self.lambda_graph = Lambda('osbot_gsuite.lambdas.slides')
         #path = Files.path_combine('.','../..')
         #self.lambda_graph.update_with_src(path)
 

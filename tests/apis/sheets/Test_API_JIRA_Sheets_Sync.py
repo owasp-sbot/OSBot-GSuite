@@ -22,7 +22,7 @@ Method_Hooks()
 
 from pbx_gs_python_utils.utils.Dev import Dev
 
-from gsbot_gsuite.apis.sheets.API_Jira_Sheets_Sync import API_Jira_Sheets_Sync
+from osbot_gsuite.apis.sheets.API_Jira_Sheets_Sync import API_Jira_Sheets_Sync
 
 
 class Test_API_Jira_Sheets_Sync(TestCase):

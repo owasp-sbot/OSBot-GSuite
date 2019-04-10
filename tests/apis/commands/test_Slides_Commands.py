@@ -4,7 +4,7 @@ from unittest import TestCase
 
 from pbx_gs_python_utils.utils.Dev                       import Dev
 
-from gsbot_gsuite.apis.commands.Slides_Commands import Slides_Commands
+from osbot_gsuite.apis.commands.Slides_Commands import Slides_Commands
 
 
 class test_Slides_Commands(TestCase):

@@ -1,4 +1,4 @@
-from gsbot_gsuite.apis.commands.Slides_Commands            import Slides_Commands
+from osbot_gsuite.apis.commands.Slides_Commands            import Slides_Commands
 from pbx_gs_python_utils.utils.slack.Slack_Commands_Helper import Slack_Commands_Helper
 
 
