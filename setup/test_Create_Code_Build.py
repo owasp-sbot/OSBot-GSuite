@@ -2,17 +2,17 @@ import unittest
 from time import sleep
 from unittest import TestCase
 
+from osbot_aws.apis.CodeBuild import CodeBuild
+from osbot_aws.apis.IAM import IAM
 from pbx_gs_python_utils.utils.Assert        import Assert
 from pbx_gs_python_utils.utils.Dev import Dev
-from pbx_gs_python_utils.utils.aws.CodeBuild import CodeBuild
-from pbx_gs_python_utils.utils.aws.IAM       import IAM
 
 
 class Create_Code_Build:
 
     def __init__(self):
         self.account_id         = '244560807427'                                # move to config value or AWS Secret
-        self.project_name       = 'gsbot-gsuite'
+        self.project_name       = 'osbot-gsuite'
         self.project_repo       = 'https://github.com/pbx-gs/{0}'.format(self.project_name)
         self.service_role       = 'arn:aws:iam::{0}:role/{1}'                  .format(self.account_id, self.project_name)
         self.project_arn        = 'arn:aws:codebuild:eu-west-2:{0}:project/{1}'.format(self.account_id, self.project_name     )
@@ -64,15 +64,13 @@ class Create_Code_Build:
     def create_policies(self):
         cloud_watch_arn = "arn:aws:logs:eu-west-2:244560807427:log-group:/aws/codebuild/{0}:log-stream:*".format(self.project_name)
         policies = {"Cloud-Watch-Policy"     : { "Version": "2012-10-17",
-                                                 "Statement": [{   "Sid": "GsBotPolicy",
-                                                                   "Effect": "Allow",
+                                                 "Statement": [{   "Effect": "Allow",
                                                                    "Action": [ "logs:CreateLogGroup"  ,
                                                                                "logs:CreateLogStream" ,
                                                                                "logs:PutLogEvents"   ],
                                                                    "Resource": [ cloud_watch_arn ]}]},
                     "Secret-Manager"         : { "Version"  : "2012-10-17",
-                                                 "Statement": [{   "Sid"    : "GsBotPolicy",
-                                                                   "Effect" : "Allow",
+                                                 "Statement": [{   "Effect" : "Allow",
                                                                    "Action" : [ "secretsmanager:GetSecretValue","secretsmanager:DescribeSecret"],
                                                                    "Resource": ["arn:aws:secretsmanager:eu-west-2:244560807427:secret:slack-gs-bot-*",
                                                                                 "arn:aws:secretsmanager:eu-west-2:244560807427:secret:elastic_gsuite_data-*"]}]},
@@ -109,7 +107,8 @@ class Create_Code_Build:
         for policies_name in policies_names:
             self.code_build.iam.policy_delete(policies_name)
 
-        self.code_build.policies_create(policies)
+        policies_arns = self.code_build.policies_create(policies)
+        self.code_build.iam.role_policies_attach(policies_arns)
 
 
 class test_Create_Code_Build(TestCase):
@@ -126,9 +125,9 @@ class test_Create_Code_Build(TestCase):
         self.api = Create_Code_Build()
 
     def test__init__(self):
-        Assert(self.api.project_name).is_equal('gsbot-gsuite'                          )      # confirm init vars setup
-        Assert(self.api.project_repo).is_equal('https://github.com/pbx-gs/gsbot-gsuite')
-        assert 'gsbot-gsuite' in self.api.code_build.projects()                               # confirm project has been created
+        Assert(self.api.project_name).is_equal('osbot-gsuite'                          )      # confirm init vars setup
+        Assert(self.api.project_repo).is_equal('https://github.com/pbx-gs/osbot-gsuite')
+        assert 'osbot-gsuite' in self.api.code_build.projects()                               # confirm project has been created
         assert self.api.iam.role_exists() is True                                             # confirm role has been created
 
     def test_create_policies(self):
