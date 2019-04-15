@@ -14,10 +14,6 @@ class Method_Hooks:
         Dev.pprint('.....')
         Dev.pprint(text)
 
-#def proxy_slack_message(text=None, attachments=None, channel=None, team_id=None):
-
-#   pbx_gs_python_utils.utils.Lambdas_Helpers.slack_message('test 13')
-
 Method_Hooks()
 
 from pbx_gs_python_utils.utils.Dev import Dev
@@ -28,15 +24,15 @@ from osbot_gsuite.apis.sheets.API_Jira_Sheets_Sync import API_Jira_Sheets_Sync
 class Test_API_Jira_Sheets_Sync(TestCase):
 
     def setUp(self):
-        self.file_id  = '1yDxu5YxL9FxY5wQ1EEQlAYGt3flIsm2VTyWwPny5RLA'
+        #self.file_id  = '1yDxu5YxL9FxY5wQ1EEQlAYGt3flIsm2VTyWwPny5RLA'
         #self.file_id ='1gc3jQelTJ8250kCZqOhqBOOZUywGOy3AiNC6cghgHak'
-        #self.file_id  = '1_Bwz6z34wALFGb1ILUXG8CtF1-Km6F9_sGXnAu4gewY'
-        self.file_id = '1eQbkiTexDq_LKGqYRdzs1i4sfYq_2lef8SbtKvFqbtQ'
+        self.file_id  = '1_Bwz6z34wALFGb1ILUXG8CtF1-Km6F9_sGXnAu4gewY'
+        #self.file_id = '1eQbkiTexDq_LKGqYRdzs1i4sfYq_2lef8SbtKvFqbtQ' # check for data to update
         self.api_sync = API_Jira_Sheets_Sync(self.file_id)
         self.api_sync.set_slack_support('T7F3AUXGV', 'DDKUZTK6X')
 
     def test__init__(self):
-        null_values = ['_gsheets', '_jira', '_jira_rest', '_elastic', '_sheet_name', '_sheet_name_backup',
+        null_values = ['_gsheets', '_jira', '_jira_rest', '_sheet_name', '_sheet_name_backup',
                        '_sheet_id', '_sheet_id_backup']
         for item in null_values:
             assert getattr(self.api_sync,item) is None , "for {0}".format(item)
@@ -47,8 +43,8 @@ class Test_API_Jira_Sheets_Sync(TestCase):
         assert self.api_sync.elastic_secret_id  == 'elastic-jira-dev-2'
         assert self.api_sync.gsuite_secret_id   == 'gsuite_gsbot_user'
 
-    def test_elastic(self):
-        assert self.api_sync.elastic().elastic.index == 'jira,it_assets,sec_project'
+    #def test_elastic(self):
+    #    assert self.api_sync.elastic().elastic.index == 'jira,it_assets,sec_project'
 
     def test_jira__gsheets(self):
         assert self.api_sync.jira().secrets_id == 'GS_BOT_GS_JIRA'
