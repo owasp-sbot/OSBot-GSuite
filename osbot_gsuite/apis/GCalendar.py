@@ -1,8 +1,6 @@
 import datetime
 
-from gsuite.GSuite import GSuite
-from gsuite.GDrive import GDrive
-from pbx_gs_python_utils.utils.Dev import Dev
+from osbot_gsuite.apis.GSuite import GSuite
 
 
 class GCalendar:

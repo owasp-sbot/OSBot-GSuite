@@ -26,5 +26,4 @@ class Deploy:
         self.package.add_folder(code_folder)
         self.package.add_root_folder()
         self.package.add_pbx_gs_python_utils()
-        #Dev.pprint(self.package.get_files())
         return self.package.update()

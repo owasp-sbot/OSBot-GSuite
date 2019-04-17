@@ -11,8 +11,6 @@ from osbot_gsuite.Deploy import Deploy
 class test_Deploy_Lambda_Functions(TestCase):
 
     def test_deploy_lambda_functions(self):
-        code_path = Files.path_combine('.','..')
-
         targets = [
                     'osbot_gsuite.lambdas.gdocs'    ,   #   gdocs.py    Lambda_GDocs    GDocs_Commands
                     'osbot_gsuite.lambdas.slides'   ,   #   slides.py   Lambda_Slides   Slides_Commands

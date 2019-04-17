@@ -26,4 +26,6 @@ class test_Lambda_lambda_gdocs(TestCase):
 
     def test_version(self):
         result = self.lambda_gdocs.invoke({'data': {}, 'params': ['version']})
+        print()
+        print(result)
         assert 'v0.' in result[0]
