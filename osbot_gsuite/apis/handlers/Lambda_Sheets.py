@@ -1,5 +1,5 @@
-from gs_budget.gsbot.Sheets_Commands import Sheets_Commands
-from utils.slack.Slack_Commands_Helper import Slack_Commands_Helper
+from pbx_gs_python_utils.utils.slack.Slack_Commands_Helper import Slack_Commands_Helper
+
 
 class Lambda_Sheets:
     def handle_lambda_event(self, event):
