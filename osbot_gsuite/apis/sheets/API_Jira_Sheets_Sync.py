@@ -20,6 +20,7 @@ class API_Jira_Sheets_Sync:
         self._sheet_id_backup   = None
         self.slack_team_id      = None
         self.slack_channel      = None
+        self.verbose            = False
         self.file_id            = file_id
         self.sheet_title        = 'Jira Data'
         self.backup_sheet_title = 'original_jira_data'
@@ -88,7 +89,8 @@ class API_Jira_Sheets_Sync:
         self.slack_channel = channel
 
     def log_message(self, message):
-        Dev.pprint(message)
+        if self.verbose:
+            Dev.pprint(message)
         if self.slack_team_id and self.slack_channel:
             slack_message(message, self.slack_team_id, self.slack_channel)
         return message
@@ -171,7 +173,8 @@ class API_Jira_Sheets_Sync:
         if backup_data is None or jira_data is None:
             return None
         diff_cells = []
-        print()
+        if self.verbose:
+            print()
         for row_index, row in enumerate(sheet_data):
             try:
                 for header_index, header in enumerate(self.headers):
@@ -273,7 +276,8 @@ class API_Jira_Sheets_Sync:
                 value = item.get('sheet_value')
                 #fields_to_update[key][field] = value
                 message ='[Jira update] for jira issue `{0}` updating field `{1}` with value `{2}` '.format(key, field, value)
-                print(message)
+                if self.verbose:
+                    print(message)
                 result = self.jira_rest().issue_update_field(key, field, value)
                 self.update_backup_data_with_new_jira_value(item)
                 if result:
@@ -284,7 +288,8 @@ class API_Jira_Sheets_Sync:
                 key = item.get('key')
                 field = item.get('field')
                 value = item.get('sheet_value')
-                Dev.pprint('need to update sheet, for jira issue `{0}` field `{1}` value `{2}` '.format(key, field, value))
+                if self.verbose:
+                    Dev.pprint('need to update sheet, for jira issue `{0}` field `{1}` value `{2}` '.format(key, field, value))
         self.color_code_cells_based_on_diff_status(diff_cells)
 
 
