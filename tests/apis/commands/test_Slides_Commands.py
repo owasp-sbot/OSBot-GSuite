@@ -16,7 +16,6 @@ class test_Slides_Commands(TestCase):
         result = Slides_Commands.gs_functions('T7F3AUXGV', 'DDKUZTK6X', [])
         assert result[0] == (':point_right: Here is the current list of GS Functions (use `slides create '
                              '{{jira id}}` to create the slides:) ')
-
     @unittest.skip('takes long time and needs auth')
     def test_create(self):
         params = ['GSSP-241']

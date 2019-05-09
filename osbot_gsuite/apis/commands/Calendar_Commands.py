@@ -1,5 +1,4 @@
-from gsuite.GCalendar import GCalendar
-
+from osbot_gsuite.apis.GCalendar import GCalendar
 
 class Calendar_Commands:
     gsuite_secret_id = 'gsuite_gsbot_user'

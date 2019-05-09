@@ -1,8 +1,7 @@
 import base64
 
 from osbot_aws.apis.Lambda import Lambda
-from pbx_gs_python_utils.utils.Lambdas_Helpers  import slack_message
-
+from pbx_gs_python_utils.utils.Lambdas_Helpers import slack_message
 
 from osbot_gsuite import version_osbot_gsuite
 from osbot_gsuite.apis.GDrive import GDrive

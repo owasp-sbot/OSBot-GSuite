@@ -1,5 +1,5 @@
-from gs_budget.gsbot.Calendar_Commands import Calendar_Commands
-from utils.slack.Slack_Commands_Helper import Slack_Commands_Helper
+from pbx_gs_python_utils.utils.slack.Slack_Commands_Helper import Slack_Commands_Helper
+from osbot_gsuite.apis.commands.Calendar_Commands import Calendar_Commands
 
 
 class Lambda_Calendar:
