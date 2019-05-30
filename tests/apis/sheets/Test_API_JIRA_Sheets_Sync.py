@@ -151,6 +151,8 @@ class Test_API_Jira_Sheets_Sync(TestCase):
         result = self.api_sync.create_sheet_from_graph(graph_name, domain, folder)
         Dev.pprint(result)
 
+
+
     def test_load_data_from_jira(self): Dev.pprint(self.api_sync.load_data_from_jira())
     def test_diff_sheet         (self): Dev.pprint(self.api_sync.diff_sheet         ())
     def test_sync_sheet         (self): Dev.pprint(self.api_sync.sync_sheet         ())
@@ -160,9 +162,17 @@ class Test_API_Jira_Sheets_Sync(TestCase):
 
 
 
+    def test_bug_sheet_not_created_from_graph(self):
+        graph_name = 'graph_1BS'
+        folder_to_save = '1o-kpQ9sLzo0_wE13XcmnUuH7GNsHpdbp'
+        domain_to_share = 'photobox.com'
+        #result = self.api_sync.gsheets().all_spreadsheets()
+        result = self.api_sync.create_sheet_from_graph(graph_name, domain_to_share,folder_to_save)
+        Dev.pprint(result)
 
     def test_bug__error_loading_sheet(self):
         #self.file_id = '1eQbkiTexDq_LKGqYRdzs1i4sfYq_2lef8SbtKvFqbtQ'
+
         self.api_sync.file_id = '1xIeV2eQb59EsiJoOUB1yOK3FY2LCvzMmTgvhAVXlEEI' # 'NoneType' object is not iterable
 
         Dev.pprint(self.api_sync.load_data_from_jira())

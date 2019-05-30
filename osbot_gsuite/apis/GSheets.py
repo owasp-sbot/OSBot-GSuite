@@ -34,9 +34,9 @@ class GSheets:
         return self.batch_update(file_id, requests)
 
 
-    def all_spreadsheets(self):
-        mime_type_presentations = 'application/vnd.google-apps.spreadsheet'
-        return self.gdrive.find_by_mime_type(mime_type_presentations)
+    # def all_spreadsheets(self):
+    #    mime_type_presentations = 'application/vnd.google-apps.spreadsheet'
+    #    return self.gdrive.find_by_mime_type(mime_type_presentations)
 
     def sheets_metadata(self, file_id):
         return self.execute(self.spreadsheets.get(spreadsheetId=file_id))
