@@ -23,6 +23,12 @@ class test_GSuite_Setup(TestCase):
                                                     'https://www.googleapis.com/auth/spreadsheets'   ]
 
 
+    def test_save_gsuite_client_secret_in_aws(self):
+        self.gsuite_setup.save_gsuite_client_secret_in_aws(self.file_with_credentials)
+
+    def test_create_auth_token_using_web_browser_flow(self):
+        self.gsuite_setup.create_auth_token_using_web_browser_flow(self.scopes)
+
     def test_check_secret_works(self):
         os.environ['AWS_REGION'] = 'london'  # simulate AWS environment
         gdrive = GDrive(self.gsuite_setup.secret_id_gsuite_token)
@@ -30,3 +36,5 @@ class test_GSuite_Setup(TestCase):
         Dev.pprint(files)
         #GSheets(self.gsuite_setup.secret_id_gsuite_token)
         #assert len(GSheets(self.gsuite_setup.secret_id_gsuite_token).all_spreadsheets()) > 0
+
+

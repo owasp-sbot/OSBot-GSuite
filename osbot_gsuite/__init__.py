@@ -1,1 +1,1 @@
-version_osbot_gsuite = "v0.31"
+version_osbot_gsuite = "v0.32 (GW)"

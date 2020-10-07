@@ -1,9 +1,13 @@
 from osbot_aws.Dependencies import load_dependency
+from gw_bot.helpers.Lambda_Helpers import log_to_elk
+from osbot_utils.utils.Files import Files
+
 
 def run(event, context):
     try:
         load_dependency("gmail")
-        load_dependency("elastic-slack")                              # load dependency (download and unzip if first run)
+        load_dependency("elastic")
+        load_dependency("slack")
         load_dependency('requests')
 
         from osbot_gsuite.apis.handlers.Lambda_GDocs import Lambda_GDocs

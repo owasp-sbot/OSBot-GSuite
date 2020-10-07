@@ -1,4 +1,4 @@
-from pbx_gs_python_utils.utils.Misc                    import Misc
+from osbot_utils.utils import Misc
 
 from osbot_gsuite.apis.sheets.API_Jira_Sheets_Sync import API_Jira_Sheets_Sync
 

@@ -1,14 +1,12 @@
 import base64
 import json
 
+from gw_bot.elastic.Elastic_Search import Elastic_Search
 from osbot_aws.apis.Lambda import Lambda
-from   pbx_gs_python_utils.utils.Elastic_Search import Elastic_Search
-from   pbx_gs_python_utils.utils.Files          import Files
+from osbot_utils.utils.Files import Files
 
 
 class GSBot_Helper:
-
-
 
     def elastic__setup_elk(self):
         index           = 'save_to_elk'

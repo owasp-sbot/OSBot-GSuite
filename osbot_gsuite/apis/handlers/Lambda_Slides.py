@@ -1,5 +1,5 @@
+from gw_bot.api.Slack_Commands_Helper import Slack_Commands_Helper
 from osbot_gsuite.apis.commands.Slides_Commands            import Slides_Commands
-from pbx_gs_python_utils.utils.slack.Slack_Commands_Helper import Slack_Commands_Helper
 
 
 class Lambda_Slides:

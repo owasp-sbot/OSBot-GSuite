@@ -9,9 +9,10 @@ class GSuite_Setup():
 
     def __init__(self):
         self.secret_id_gsuite_client_secret = 'gwbot_gsuite_client_secret'
-        self.secret_id_gsuite_token         = 'gwbot_gsuite_token'
-        self.secret_id_with_credentials     = 'gsuite_token'
-        self.secret_id_to_create            = 'gsuite_gsbot_user'
+        self.secret_id_gsuite_token         = 'gwbot_gsuite_token_2'
+
+        #self.secret_id_with_credentials     = 'gsuite_token'
+        #self.secret_id_to_create            = 'gsuite_gsbot_user'
         self.file_credentials               = '/tmp/gsuite_client_secret_{0}.json'.format(self.secret_id_gsuite_client_secret)  # todo: refactor to make it OS independent
         self.file_token                     = '/tmp/gmail_credential_{0}.json'    .format(self.secret_id_gsuite_token)
 
@@ -29,6 +30,9 @@ class GSuite_Setup():
 
         raise Exception(f'cloud not update secret: {self.secret_id_gsuite_client_secret}')
 
+
+    # note: double check thta the 'refresh_token' is set on the AWS Secret (if not, it will fail after a couple hours)
+    # todo: figure out how long until then main token expires and Auth workflow is required again
     def create_auth_token_using_web_browser_flow(self, scopes):
 
         client_secret = Secrets(self.secret_id_gsuite_client_secret).value()                     # get client_secret from AWS Secrets

@@ -1,27 +1,43 @@
 import unittest
 from unittest import TestCase
 
+from gw_bot.Deploy import Deploy
+from gw_bot.helpers.Test_Helper import Test_Helper
 from osbot_aws.apis.Lambda import Lambda
 
 from osbot_gsuite import version_osbot_gsuite
 from osbot_gsuite.lambdas.gdocs import run
 
 
-class test_Lambda_lambda_gdocs(TestCase):
+class test_Lambda_lambda_gdocs(Test_Helper):
     def setUp(self):
-        self.lambda_gdocs = Lambda('osbot_gsuite.lambdas.gdocs')
+        super().setUp()
+        self.lambda_name = 'osbot_gsuite.lambdas.gdocs'
+        self.lambda_gdocs = Lambda(self.lambda_name)
 
-    @unittest.skip('to debug: was failing in CodeBuild')
+    def test_update(self):
+        Deploy().deploy_lambda__gsuite(self.lambda_name)
+
+    #@unittest.skip('to debug: was failing in CodeBuild')
     def test_invoke_directly(self):
-        response = run({ 'data':{}},{})
-        assert response[0] == '*Here are the `GDocs_Commands` commands available:*'
+        self.result = run({ 'data':{}},{})
+        assert self.result[0] == '*Here are the `GDocs_Commands` commands available:*'
+
+    def test_invoke__directly_pdf(self):
+        file_id = '1j7gNbN4o4kO1Q_Qp39LC1AO_d23BrFZZHoutEkfz41I'
+        self.result = run({'data': {'channel':'DRE51D4EM'}, 'params': ['pdf', file_id] }, {})
 
     def test_invoke___with_no_command(self):
         result = self.lambda_gdocs.invoke({'data': {}, 'params': []})
         assert result[0] == '*Here are the `GDocs_Commands` commands available:*'
 
+
+
+
     def test_pdf(self):
-        result = self.lambda_gdocs.invoke({ 'data':{}, 'params':['pdf','1xIeV2eQb59EsiJoOUB1yOK3FY2LCvzMmTgvhAVXlEEI']})
+        self.test_update()
+        file_id = '1j7gNbN4o4kO1Q_Qp39LC1AO_d23BrFZZHoutEkfz41I'
+        result = self.lambda_gdocs.invoke({ 'data':{}, 'params':['pdf',file_id]})
         assert result == [None,None]
 
     def test_version(self):
