@@ -1,6 +1,10 @@
 from unittest       import TestCase
-from gsuite.GSuite  import GSuite
-from utils.Json import Json
+
+from osbot_aws.apis.Secrets import Secrets
+from osbot_gsuite.apis.GSuite import GSuite
+from osbot_utils.utils.Dev import Dev
+from osbot_utils.utils.Files import file_contents
+from osbot_utils.utils.Json import Json
 
 
 class Test_GSuite(TestCase):
@@ -20,8 +24,14 @@ class Test_GSuite(TestCase):
         token_values = Json.load_json(token_file)
         assert token_values['scopes'] == ['https://www.googleapis.com/auth/admin.reports.audit.readonly']
 
+    # install json token in secret
+    def test_create_aws_secret_with_json_token_in(self):
+        import os
 
 
-    #def test_admin_reports(self):
-    #    result = self.gsuite.admin_reports_v1()
-    #    Dev.pprint(result)
+    def test_create_oauth_token(self):
+        gsuite    = GSuite()
+        gsuite.get_oauth_creds('drive')
+
+
+

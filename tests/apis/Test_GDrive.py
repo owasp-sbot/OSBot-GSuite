@@ -1,9 +1,7 @@
 from unittest        import TestCase
 
-from pbx_gs_python_utils.utils.Dev import Dev
-
 from osbot_gsuite.apis.GDrive import GDrive
-
+from osbot_utils.utils.Dev import Dev
 
 class Test_GDrive(TestCase):
     def setUp(self):
