@@ -1,6 +1,6 @@
 from osbot_jira.api.jira_server.API_Jira import API_Jira
 from osbot_jira.api.jira_server.API_Jira_Rest import API_Jira_Rest
-from gw_bot.helpers.Lambda_Helpers import slack_message
+from osbot_aws.helpers.Lambda_Helpers import slack_message
 from osbot_gsuite.apis.GSheets import GSheets
 from osbot_utils.utils.Dev import Dev
 

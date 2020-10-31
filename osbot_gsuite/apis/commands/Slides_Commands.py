@@ -1,6 +1,6 @@
 from time import time
 
-from gw_bot.helpers.Lambda_Helpers import slack_message
+from osbot_aws.helpers.Lambda_Helpers import slack_message
 from osbot_gsuite import version_osbot_gsuite
 from osbot_gsuite.apis.create_slides.Project_Slides              import Project_Slides
 from osbot_gsuite.apis.create_slides.Slides_for_Projects         import Slides_for_Projects

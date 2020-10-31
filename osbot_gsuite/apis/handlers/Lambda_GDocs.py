@@ -1,5 +1,5 @@
 from gw_bot.api.Slack_Commands_Helper import Slack_Commands_Helper
-from gw_bot.helpers.Lambda_Helpers import log_to_elk
+from osbot_aws.helpers.Lambda_Helpers import log_to_elk
 from osbot_gsuite.apis.commands.GDocs_Commands              import GDocs_Commands
 
 
