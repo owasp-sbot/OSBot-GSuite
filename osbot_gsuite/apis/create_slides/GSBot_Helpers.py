@@ -1,8 +1,8 @@
 import base64
 import json
 
-from gw_bot.elastic.Elastic_Search import Elastic_Search
 from osbot_aws.apis.Lambda import Lambda
+from osbot_elastic.Elastic_Search import Elastic_Search
 from osbot_utils.utils.Files import Files
 
 

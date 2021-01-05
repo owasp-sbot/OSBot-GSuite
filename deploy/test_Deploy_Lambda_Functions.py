@@ -1,11 +1,10 @@
 import unittest
 from unittest import TestCase
 
-from pbx_gs_python_utils.utils.Dev import Dev
-from pbx_gs_python_utils.utils.Files import Files
-from pbx_gs_python_utils.utils.Lambdas_Helpers import slack_message
+from osbot_aws.helpers.Lambda_Helpers import slack_message
+from osbot_utils.utils.Dev import Dev
 
-from osbot_gsuite.Deploy import Deploy
+from gw_bot.Deploy import Deploy
 
 
 class test_Deploy_Lambda_Functions(TestCase):

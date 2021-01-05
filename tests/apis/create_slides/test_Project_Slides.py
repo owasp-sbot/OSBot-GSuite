@@ -1,9 +1,11 @@
-import sys ; sys.path.append('..')
+import sys ;
+
+from osbot_utils.utils.Dev import Dev
+
+sys.path.append('..')
 
 import unittest
 from unittest import TestCase
-
-from pbx_gs_python_utils.utils.Dev                  import Dev
 from osbot_gsuite.apis.create_slides.Project_Slides import Project_Slides
 
 

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from pbx_gs_python_utils.utils.Dev import Dev
+from osbot_utils.utils.Dev import Dev
 
 from osbot_gsuite.apis.sheets.API_Jira_Sheets_Create import API_Jira_Sheets_Create
 

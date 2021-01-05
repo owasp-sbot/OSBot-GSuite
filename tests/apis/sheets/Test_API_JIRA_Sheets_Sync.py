@@ -1,13 +1,14 @@
 from unittest import TestCase
 
+from osbot_utils.utils.Dev import Dev
 from pbx_gs_python_utils.utils.Assert import Assert
 from pbx_gs_python_utils.utils.Misc import Misc
 
 
 class Method_Hooks:
     def __init__(self):
-        import pbx_gs_python_utils.utils.Lambdas_Helpers
-        pbx_gs_python_utils.utils.Lambdas_Helpers.slack_message = lambda text, attachments, channel: Method_Hooks.on_slack_message(text)
+        import osbot_aws.helpers.Lambda_Helpers
+        osbot_aws.helpers.Lambda_Helpers.slack_message = lambda text, attachments, channel: Method_Hooks.on_slack_message(text)
 
     @staticmethod
     def on_slack_message(text):
@@ -15,8 +16,6 @@ class Method_Hooks:
         Dev.pprint(text)
 
 Method_Hooks()
-
-from pbx_gs_python_utils.utils.Dev import Dev
 
 from osbot_gsuite.apis.sheets.API_Jira_Sheets_Sync import API_Jira_Sheets_Sync
 

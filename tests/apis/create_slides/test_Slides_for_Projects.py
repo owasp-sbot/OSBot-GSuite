@@ -1,11 +1,13 @@
 import sys
+
+from osbot_utils.utils import Misc
+from osbot_utils.utils.Dev import Dev
+
 sys.path.append('..')
 import unittest
 from   unittest import TestCase
 
 from osbot_gsuite.apis.create_slides.Slides_for_Projects import Slides_for_Projects
-from pbx_gs_python_utils.utils.Dev          import Dev
-from pbx_gs_python_utils.utils.Misc         import Misc
 
 @unittest.skip('review and move long running into separate class')
 class test_Slides_For_Projects(TestCase):

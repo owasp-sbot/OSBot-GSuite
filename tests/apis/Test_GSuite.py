@@ -16,12 +16,12 @@ class Test_GSuite(TestCase):
 
     def test_get_oauth_token_drive(self):
         token_file = self.gsuite.get_oauth_token('drive.metadata.readonly')
-        token_values = Json.load_json(token_file)
+        token_values = Json.load_file(token_file)
         assert token_values['scopes'] == ['https://www.googleapis.com/auth/drive.metadata.readonly']
 
     def test_get_oauth_token_admin(self):
         token_file = self.gsuite.get_oauth_token('admin.reports.audit.readonly')
-        token_values = Json.load_json(token_file)
+        token_values = Json.load_file(token_file)
         assert token_values['scopes'] == ['https://www.googleapis.com/auth/admin.reports.audit.readonly']
 
     # install json token in secret

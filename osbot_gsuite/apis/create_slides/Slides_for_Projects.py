@@ -1,4 +1,6 @@
-from gw_bot.elastic.Elastic_Search import Elastic_Search
+from osbot_elastic.Elastic_Search import Elastic_Search
+
+from osbot_gsuite.apis.GDrive                           import GDrive
 from osbot_gsuite.apis.GSheets                          import GSheets
 from osbot_gsuite.apis.GSlides                          import GSlides
 from osbot_gsuite.apis.create_slides.GSBot_Helpers      import GSBot_Helper
