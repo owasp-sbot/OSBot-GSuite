@@ -1,8 +1,18 @@
-from oauth2client            import file, client
-from oauth2client.tools      import argparser, run_flow
+import os
+
+from google_auth_oauthlib.flow      import InstalledAppFlow
+from googleapiclient.discovery import build
+from oauth2client                   import file, client
+from oauth2client.tools             import argparser, run_flow
+from google.oauth2.credentials      import Credentials
+from google.auth.transport.requests import Request
 
 from osbot_aws.apis.Secrets  import Secrets
-from osbot_utils.utils.Files import file_not_exists, file_contents, file_create
+from osbot_gsuite.apis.GSheets import GSheets
+from osbot_gsuite.apis.GSlides import GSlides
+from osbot_utils.utils.Dev import pprint
+from osbot_utils.utils.Files import file_not_exists, file_contents, file_create, path_combine
+from osbot_utils.utils.Json import json_file_contents, file_create_json, json_dumps
 
 
 class GSuite_Setup():
@@ -47,3 +57,50 @@ class GSuite_Setup():
         token_json = file_contents(self.file_token)                                              # get gsuite token contents
         Secrets(self.secret_id_gsuite_token).create(token_json)                                  # save it on AWS Secret
         # todo: fix code above to use .update instead of .create (current AWS account only has
+
+
+    def create_auth_token_using_web_browser_flow__store_in_env(self, scopes):
+
+        #client_secret = Secrets(self.secret_id_gsuite_client_secret).value()                     # get client_secret from AWS Secrets
+        folder_auth      = '/Users/diniscruz/_dev/_misc_data/'
+        gsuite_auth_file = path_combine(folder_auth, 'client_secret____.apps.googleusercontent.com.json')
+        file_credentials = path_combine(folder_auth, 'file_credentials.json')
+        file_token       = path_combine(folder_auth, 'file_token.json')
+
+        creds = None
+
+        if os.path.exists(file_token):
+            creds = Credentials.from_authorized_user_file(file_token, scopes)
+        # If there are no (valid) credentials available, let the user log in.
+        if not creds or not creds.valid:
+            if creds and creds.expired and creds.refresh_token:
+                creds.refresh(Request())
+            else:
+                flow = InstalledAppFlow.from_client_secrets_file(gsuite_auth_file, scopes)
+                creds = flow.run_local_server(port=55042)
+            # Save the credentials for the next run
+            with open(file_token, 'w') as token:
+                token.write(creds.to_json())
+
+        service = build('slides', 'v1', credentials=creds)
+        PRESENTATION_ID = "___"
+        # Call the Slides API
+        print('here')
+        gsheets = GSheets()
+
+        body = {'properties': {'title': "sheet created from API" }}
+        result = gsheets.spreadsheets.create(body=body).execute()
+        pprint(result)
+        return
+        gslides = GSlides()
+        #pprint(gslides.all_presentations())
+        pprint(gslides.presentation_create("test from HBSec Bot"))
+        presentation = service.presentations().get(
+            presentationId=PRESENTATION_ID).execute()
+        slides = presentation.get('slides')
+
+        print('The presentation contains {} slides:'.format(len(slides)))
+        for i, slide in enumerate(slides):
+            print('- Slide #{} contains {} elements.'.format(
+                i + 1, len(slide.get('pageElements'))))
+

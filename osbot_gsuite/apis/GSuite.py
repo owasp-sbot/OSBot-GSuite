@@ -8,7 +8,7 @@ from oauth2client.tools        import run_flow
 
 from googleapiclient.discovery import build
 from osbot_aws.apis.Secrets import Secrets
-from osbot_utils.utils.Files import Files, file_create
+from osbot_utils.utils.Files import Files, file_create, path_combine
 
 
 class GSuite:
@@ -23,6 +23,10 @@ class GSuite:
     def get_oauth_token(self, desired_scope):
         #secret_data  = json.loads(Secrets(self.gsuite_secret_id).value())                           # load secret from AWS Secrets store
         file_token    = '/tmp/gmail_credential_{0}.json'.format(desired_scope)                          # this is the tmp file with the token value for the desired scope
+
+        folder_auth = '/Users/diniscruz/_dev/_misc_data/'
+        file_token = path_combine(folder_auth, 'file_token.json')
+
 
         if not Files.exists(file_token):                                                                # if the file does not existSecrets(self.gsuite_secret_id)
             token_data = Secrets(self.gsuite_secret_id).value()
@@ -47,13 +51,22 @@ class GSuite:
 
     # this creates the credentials object required to create the GSuite service object
     def get_oauth_creds(self, desired_scope):
-        token_file = self.get_oauth_token(desired_scope)        # get the token file
-        store       = file.Storage(token_file)                  # create Storage object from file
-        creds       = store.get()                               # extract GSuite creds value
+        #token_file = self.get_oauth_token(desired_scope)        # get the token file
+        #store       = file.Storage(token_file)                  # create Storage object from file
+        #creds       = store.get()                               # extract GSuite creds value
+
+        from google.oauth2.credentials      import Credentials
+        folder_auth = '/Users/diniscruz/_dev/_misc_data/'
+        file_token = path_combine(folder_auth, 'file_token.json')
+
+        creds = Credentials.from_authorized_user_file(file_token)
+
         return creds
 
     def create_service(self,serviceName, version, scope):
-        return build(serviceName, version, http=self.get_oauth_creds(scope).authorize(Http()))
+        creds = self.get_oauth_creds(scope)
+        return build(serviceName, version, credentials=creds)
+        #return build(serviceName, version, http=self.get_oauth_creds(scope).authorize(Http()))
 
     # helper files to create individual GSuite service objects
     def admin_reports_v1(self):
