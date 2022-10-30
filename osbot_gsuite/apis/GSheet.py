@@ -99,22 +99,6 @@ class GSheet:
                         "row_end"  : row_end   }
         request = { "mergeCells": {"range" : self.format_range(**kwargs_range) ,
                                       "mergeType"   : merge_type}}
-
-    #     request = {
-    #   "mergeCells":
-    #   {
-    #     "mergeType": "MERGE_ALL", # Modified
-    #     "range":
-    #     {
-    #       "sheetId": self.sheet_id,
-    #       "startRowIndex": 6,
-    #       "endRowIndex": 7,
-    #       "startColumnIndex": 2,
-    #       "endColumnIndex": 19
-    #     }
-    #   }
-    # }
-        pprint(request)
         return self.add_request(request)
 
     def add_request_wrap_stategy(self,col_start, row_start, col_end=None, row_end=None, wrap_stategy=Wrap_Strategy.WRAP):
