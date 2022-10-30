@@ -1,5 +1,8 @@
+
 from osbot_gsuite.apis.GDrive import GDrive
+from osbot_gsuite.apis.GSheet import GSheet
 from osbot_gsuite.apis.GSuite import GSuite
+from osbot_utils.decorators.lists.index_by import index_by
 
 
 class GSheets:
@@ -40,6 +43,20 @@ class GSheets:
 
     def sheets_metadata(self, file_id):
         return self.execute(self.spreadsheets.get(spreadsheetId=file_id))
+
+    @index_by
+    def sheets(self, file_id):
+        sheets = {}
+        for sheet in self.sheets_metadata(file_id=file_id).get('sheets'):
+            properties         = sheet.get('properties')
+            sheet_id           = properties.get('sheetId')
+            sheet_name         = properties.get('title'  )
+            sheets[sheet_name] = self.sheet(file_id=file_id, sheet_id=sheet_id, sheet_name=sheet_name)
+            #print(sheet)
+        return sheets
+
+    def sheet(self, file_id, sheet_id, sheet_name):
+        return GSheet(gsheets=self, file_id=file_id, sheet_id=sheet_id, sheet_name=sheet_name)
 
     def sheets_add_sheet(self, file_id, title):
         request = { "addSheet": { "properties": { "title": title } } }
@@ -87,6 +104,10 @@ class GSheets:
         return {'updateCells': { 'start': {'sheetId': sheet_id, 'rowIndex': row, 'columnIndex': col },
                                  'rows': [{'values': [ {'userEnteredValue': {'stringValue': value}}] } ],
                                  'fields': 'userEnteredValue'}}
+
+    def request_clear_formatting(self, sheet_id):
+        return { "updateCells": { "range" : {"sheetId": sheet_id },
+                                  "fields": "userEnteredFormat"  }}
 
     def clear_values(self, file_id, sheet_name):
         sheet_range = "{0}!A1:Z".format(sheet_name)

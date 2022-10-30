@@ -82,25 +82,25 @@ class GSuite_Setup():
             with open(file_token, 'w') as token:
                 token.write(creds.to_json())
 
-        service = build('slides', 'v1', credentials=creds)
-        PRESENTATION_ID = "___"
-        # Call the Slides API
-        print('here')
-        gsheets = GSheets()
-
-        body = {'properties': {'title': "sheet created from API" }}
-        result = gsheets.spreadsheets.create(body=body).execute()
-        pprint(result)
-        return
-        gslides = GSlides()
-        #pprint(gslides.all_presentations())
-        pprint(gslides.presentation_create("test from HBSec Bot"))
-        presentation = service.presentations().get(
-            presentationId=PRESENTATION_ID).execute()
-        slides = presentation.get('slides')
-
-        print('The presentation contains {} slides:'.format(len(slides)))
-        for i, slide in enumerate(slides):
-            print('- Slide #{} contains {} elements.'.format(
-                i + 1, len(slide.get('pageElements'))))
+        # service = build('slides', 'v1', credentials=creds)
+        # PRESENTATION_ID = "___"
+        # # Call the Slides API
+        # print('here')
+        # gsheets = GSheets()
+        #
+        # body = {'properties': {'title': "AAAAAA sheet created from API" }}
+        # result = gsheets.spreadsheets.create(body=body).execute()
+        # pprint(result)
+        # return
+        # gslides = GSlides()
+        # #pprint(gslides.all_presentations())
+        # pprint(gslides.presentation_create("test from HBSec Bot"))
+        # presentation = service.presentations().get(
+        #     presentationId=PRESENTATION_ID).execute()
+        # slides = presentation.get('slides')
+        #
+        # print('The presentation contains {} slides:'.format(len(slides)))
+        # for i, slide in enumerate(slides):
+        #     print('- Slide #{} contains {} elements.'.format(
+        #         i + 1, len(slide.get('pageElements'))))
 
