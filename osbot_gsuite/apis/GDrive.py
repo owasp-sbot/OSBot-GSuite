@@ -18,12 +18,16 @@ class GDrive:
             Dev.pprint(error)                   # add better error handling log capture
             return None
 
+    def folder_create(self, folder_name):
+        return self.file_create(file_type='application/vnd.google-apps.folder', title=folder_name)
+
     def file_create(self, file_type, title, folder=None):
         file_metadata = {
             "mimeType": file_type,
-            "parents": [folder],
             "name": title
         }
+        if folder:
+            file_type["parents"] =  [folder]
         file = self.files.create(body=file_metadata, fields='id').execute()
         return file.get('id')
 
@@ -36,11 +40,11 @@ class GDrive:
             fh.write(pdf_data)
         return target_file
 
-    def file_metadata(self, file_Id, fields = "id,name"):
-        return self.execute(self.files.get(fileId = file_Id, fields=fields))
+    def file_metadata(self, file_id, fields = "id,name"):
+        return self.execute(self.files.get(fileId = file_id, fields=fields))
 
-    def file_metadata_update(self, file_Id, changes):
-        return self.files.update(fileId=file_Id, body=changes).execute()
+    def file_metadata_update(self, file_id, changes):
+        return self.files.update(fileId=file_id, body=changes).execute()
 
     def file_delete(self, file_id):
         if file_id:
@@ -54,12 +58,13 @@ class GDrive:
         }
         return self.gsuite.permissions().create(fileId=file_id, body=domain_permission, fields='id').execute()
 
-    def file_update(self, local_file, mime_type, file_id):
-        if Files.exists(local_file):
-            file_metadata = {'name': Files.file_name(local_file)}
-            media = MediaFileUpload(local_file, mimetype=mime_type)
-            file = self.files.update(body=file_metadata, media_body=media, fileId= file_id, fields='id').execute()
-            return file.get('id')
+    def file_update(self, file_id, body):
+        return self.files.update(fileId=file_id, body=body).execute()
+        # if Files.exists(local_file):
+        #     file_metadata = {'name': Files.file_name(local_file)}
+        #     media = MediaFileUpload(local_file, mimetype=mime_type)
+        #     file = self.files.update(body=file_metadata, media_body=media, fileId= file_id, fields='id').execute()
+        #     return file.get('id')
         return None
 
     def file_upload(self, local_file, mime_type, folder_id=None):

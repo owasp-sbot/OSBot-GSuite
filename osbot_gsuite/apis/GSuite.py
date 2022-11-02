@@ -75,6 +75,9 @@ class GSuite:
     def calendar_v3(self):
         return self.create_service('calendar','v3','calendar')
 
+    def docs_v1(self):
+        return self.create_service('docs', 'v1', 'documents')
+
     def drive_v3(self):
         return self.create_service('drive', 'v3', 'drive')
         #return self.create_service('drive', 'v3', 'drive.metadata.readonly')

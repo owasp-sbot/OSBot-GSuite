@@ -39,13 +39,13 @@ class Test_GDrive(TestCase):
         changes =  self.gdrive.set_file_title(file_id,'GSlides API tests')
         Dev.pprint(changes)
 
-    def test_file_update(self):
-        file   = '/tmp/puml_graph_W64.png'
-        #file   = '/tmp/puml_graph_09Q.png'
-        file   = '/tmp/puml_graph.png'
-        id     = '1H72nAFgqu1OSW_xm-gwDWml6tOzy5UZ_'
-        result = self.gdrive.file_update(file,'image/png',id)
-        Dev.pprint(result)
+    # def test_file_update(self):
+    #     file   = '/tmp/puml_graph_W64.png'
+    #     #file   = '/tmp/puml_graph_09Q.png'
+    #     file   = '/tmp/puml_graph.png'
+    #     id     = '1H72nAFgqu1OSW_xm-gwDWml6tOzy5UZ_'
+    #     result = self.gdrive.file_update(file,'image/png',id)
+    #     Dev.pprint(result)
 
     def test_file_share_with_domain(self):
         file_id = '1BvhH00qomATK6YFB3afQwe2GJeS_VLdikhuPdAE0ev0'

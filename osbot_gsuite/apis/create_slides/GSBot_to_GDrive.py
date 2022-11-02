@@ -30,6 +30,7 @@ class GSBot_to_GDrive:
             self.gdrive.file_delete(file_id)
         return self.gdrive.file_upload(png_file, 'image/png', folder_id)
         # can't use the code below because, the update wasn't working due to GSlides keeping (somewhere) a cache of the previous value
+        #                                   update: (Oct 2022): GSlides will create a copy of the file uploaded to googleusercontent.com (which is what is then used in the GSlides)
         # if file_id is None:
         #     return self.gdrive.file_upload(png_file,'image/png', folder_id)
         # else:

@@ -1,36 +1,8 @@
-from enum import Enum
-
+from osbot_gsuite.apis.GTypes import Merge_Type, Wrap_Strategy, RGB, Border_Style
 from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Misc import unique
 from osbot_utils.utils.Str import str_join
 
-
-class RGB:
-    BLACK       = { "red": 0    , "green": 0    , "blue": 0    }
-    BLUE        = { "red": 0    , "green": 0    , "blue": 1    }
-    DARK_BLUE_2 = { "red": 0.04 , "green": 0.33 , "blue": 0.58 }
-    GREEN       = { "red": 0    , "green": 1    , "blue": 0    }
-    RED         = { "red": 1    , "green": 0    , "blue": 0    }
-    WHITE       = { "red": 1    , "green": 1    , "blue": 1    }
-
-class Border_Style:
-    DOTTED	        = "DOTTED"
-    DASHED          = "DASHED"
-    SOLID           = "SOLID"
-    SOLID_MEDIUM    = "SOLID_MEDIUM"
-    SOLID_THICK     = "SOLID_THICK"
-    NONE            = "NONE"
-    DOUBLE          = "DOUBLE"
-
-class Merge_Type:
-    MERGE_ALL     = "MERGE_ALL"
-    MERGE_COLUMNS = "MERGE_COLUMNS"
-    MERGE_ROWS    = "MERGE_ROWS"
-
-class Wrap_Strategy:
-    OVERFLOW_CELL = "OVERFLOW_CELL"
-    CLIP          = "CLIP"
-    WRAP          = "WRAP"
 
 class GSheet:
 
@@ -290,7 +262,6 @@ class GSheet:
                  }
 
     def commit(self):
-        results = self.gsheets.execute_requests(file_id=self.file_id, requests=self.requests)
-        print(results)
+        self.gsheets.execute_requests(file_id=self.file_id, requests=self.requests)
         self.requests_committed.extend(self.requests)
         self.requests = []

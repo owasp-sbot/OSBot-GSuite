@@ -44,7 +44,10 @@ class GSlides:
     def element_create_image(self, file_id, page_id, image_url, x_pos=200, y_pos=200, width=100, height=100):
         requests = [ self.element_create_image_request(page_id, image_url, x_pos, y_pos, width, height)]
         result = self.batch_update(file_id, requests)
-        return result.get('replies')[0].get('createImage').get('objectId')
+        if result:
+            result_replies = result.get('replies')
+            if result_replies:
+                return result_replies[0].get('createImage').get('objectId')
 
     def element_create_table_request(self, slide_id, rows=3, cols=3, x_pos=200, y_pos=200, width=100, height=100, objectId=None):
         return { "createTable": { "objectId"         : objectId,
