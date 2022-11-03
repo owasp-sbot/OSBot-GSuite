@@ -3,11 +3,11 @@ from unittest import TestCase
 from osbot_gsuite.apis.GDoc import GDoc
 from osbot_gsuite.apis.GDocs import GDocs
 from osbot_gsuite.apis.GTypes import RGB, Font_Family, Baseline_Offset, Alignment, Named_Style, Direction, Spacing_Mode, \
-    Dash_Style
+    Dash_Style, Content_Alignment
 from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Json import json_dump
 from osbot_utils.utils.Lists import list_del
-from osbot_utils.utils.Misc import list_set
+from osbot_utils.utils.Misc import list_set, random_text, wait_for
 
 
 class test_GDoc(TestCase):
@@ -17,9 +17,30 @@ class test_GDoc(TestCase):
         self.gdocs   = GDocs()
         self.gdoc    = GDoc(gdocs=self.gdocs, file_id=self.file_id)
 
+    def test_add_request_delete_table(self):
+        self.gdoc.add_request_insert_table(2,3,3).commit()
+        wait_for(2)
+        result = self.gdoc.add_request_delete_table(0).commit()
+        pprint(result)
+
     def test_add_request_insert_table(self):
         result = self.gdoc.add_request_insert_table(3,5, 100).commit()
         pprint(result)
+
+    def test_add_request_insert_table_column(self):
+        table        = self.gdoc.tables().pop(0)
+        column_index = 1
+        self.gdoc.add_request_insert_table_column(table=table, column_index=column_index).commit()
+        #wait_for(2)
+        self.gdoc.add_request_delete_table_column(table=table, column_index=column_index).commit()
+
+    def test_add_request_insert_table_row(self):
+        table      = self.gdoc.tables().pop(0)
+        row_index = 3
+        self.gdoc.add_request_insert_table_row(table=table, row_index=row_index).commit()
+        #wait_for(2)
+        self.gdoc.add_request_delete_table_row(table=table, row_index=row_index).commit()
+
 
     def test_add_request_insert_text(self):
         result = self.gdoc.add_request_insert_text('----abc-----', 1).commit()
@@ -28,6 +49,26 @@ class test_GDoc(TestCase):
 
     def test_add_request_delete_range(self):
         result = self.gdoc.add_request_delete_range(1,4).commit()
+        pprint(result)
+
+    def test_add_request_merge_cells(self):
+        table  = self.gdoc.tables().pop(0)
+        kwargs = { "table"       : table,
+                   "column_index": 0    ,
+                   "row_index"   : 1    ,
+                   "column_span" : 2    ,
+                   "row_span"    : 2    }
+        result = self.gdoc.add_request_merge_cells(**kwargs).commit()
+        pprint(result)
+
+    def test_add_request_unmerge_cells(self):
+        table  = self.gdoc.tables().pop(0)
+        kwargs = { "table"       : table,
+                   "column_index": 0    ,
+                   "row_index"   : 1    ,
+                   "column_span" : 2    ,
+                   "row_span"    : 2    }
+        result = self.gdoc.add_request_unmerge_cells(**kwargs).commit()
         pprint(result)
 
     def test_add_request_page_break(self):
@@ -79,6 +120,29 @@ class test_GDoc(TestCase):
         result = self.gdoc.add_request_paragraph_style(**kwargs).commit()
         pprint(result)
 
+    def test_add_request_update_table_row_height(self):
+        table = self.gdoc.tables().pop(0)
+        self.gdoc.add_request_update_table_row_height(table,30, [2]).commit()
+
+    def test_add_request_update_table_cell_style(self):
+        table = self.gdoc.tables().pop(0)
+
+        kwargs = { "table"            : table    ,
+                   "column_index"     : 1        ,
+                   "row_index"        : 2        ,
+                   "column_span"      : 2        ,
+                   "row_span"         : 2        ,
+                   "background_color" : RGB.WHITE,
+                   "padding"          : 5        ,
+                   "content_alignment": Content_Alignment.MIDDLE,
+                   "border"           : {'size': 2 , 'dash_style': Dash_Style.SOLID}}
+        self.gdoc.add_request_update_table_cell_style(**kwargs).commit()
+
+    def test_add_request_update_table_row_width(self):
+        table = self.gdoc.tables().pop(0)
+        self.gdoc.add_request_update_table_row_width(table,300, [0]).commit()
+
+    # utils
     def test_info(self):
         result = self.gdoc.info()
 
@@ -151,5 +215,36 @@ class test_GDoc(TestCase):
         #self.gdoc.add_requests_text_style_to_range(table, kwargs_formatting).commit()
         pprint(table)
 
+
+
+    # todo: this is not working reliably for tables
+    def test_table_paragraph_elements_text_runs_content(self):
+        table = self.gdoc.tables().pop(0) # work on first table of the test document
+        result = self.gdoc.table_paragraph_elements_text_runs_content(table)
+
+        cell             = result[0][0]
+        cell_start_index = cell.get('start_index') + 1
+        targets          = cell.get('text_runs')
+
+
+        new_text = "aaa __" + random_text()
+        # start_index = target.get('start_index')
+        # end_index   = target.get('end_index') -1
+
+        kwargs_text_style      = {"bold": True, "background_color": RGB.BLUE, "foreground_color": RGB.WHITE}
+        kwargs_paragraph_style = { "alignment": Alignment.START}
+
+        self.gdoc.add_requests_paragraph_style_to_ranges(targets, kwargs_paragraph_style)
+        self.gdoc.add_requests_text_style_to_ranges     (targets, kwargs_text_style     )
+
+        self.gdoc.add_request_replace_ranges_text(ranges=targets, start_index=cell_start_index, new_text=new_text)
+
+        self.gdoc.commit()
+
+
+    def test_format_row(self):
+        table = self.gdoc.tables().pop(0) # work on first table of the test document
+        result = self.gdoc.table_paragraph_elements_text_runs_content(table)
+        pprint(result)
 
 

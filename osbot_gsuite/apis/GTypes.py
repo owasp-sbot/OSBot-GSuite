@@ -35,6 +35,12 @@ class Border_Style:
     NONE            = "NONE"
     DOUBLE          = "DOUBLE"
 
+class Content_Alignment:
+    UNSPECIFIED = "CONTENT_ALIGNMENT_UNSPECIFIED"
+    TOP         = "TOP"
+    MIDDLE      = "MIDDLE"
+    BOTTOM      = "BOTTOM"
+
 class Dash_Style:
     UNSPECIFIED = "DASH_STYLE_UNSPECIFIED"
     SOLID       = "SOLID"
@@ -68,6 +74,11 @@ class Spacing_Mode:
     SPACING_MODE_UNSPECIFIED = "SPACING_MODE_UNSPECIFIED"
     NEVER_COLLAPSE           = "NEVER_COLLAPSE"
     COLLAPSE_LISTS           = "COLLAPSE_LISTS"
+
+class Width_Type:
+    UNSPECIFIED            = "WIDTH_TYPE_UNSPECIFIED"
+    EVENLY_DISTRIBUTED     = "EVENLY_DISTRIBUTED"
+    FIXED_WIDTH            = "FIXED_WIDTH"
 
 class Wrap_Strategy:
     OVERFLOW_CELL = "OVERFLOW_CELL"
