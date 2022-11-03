@@ -5,6 +5,9 @@ from osbot_gsuite.apis.GDocs import GDocs
 from osbot_gsuite.apis.GTypes import RGB, Font_Family, Baseline_Offset, Alignment, Named_Style, Direction, Spacing_Mode, \
     Dash_Style
 from osbot_utils.utils.Dev import pprint
+from osbot_utils.utils.Json import json_dump
+from osbot_utils.utils.Lists import list_del
+from osbot_utils.utils.Misc import list_set
 
 
 class test_GDoc(TestCase):
@@ -14,8 +17,17 @@ class test_GDoc(TestCase):
         self.gdocs   = GDocs()
         self.gdoc    = GDoc(gdocs=self.gdocs, file_id=self.file_id)
 
+    def test_add_request_insert_table(self):
+        result = self.gdoc.add_request_insert_table(3,5, 100).commit()
+        pprint(result)
+
     def test_add_request_insert_text(self):
         result = self.gdoc.add_request_insert_text('----abc-----', 1).commit()
+        pprint(result)
+
+
+    def test_add_request_delete_range(self):
+        result = self.gdoc.add_request_delete_range(1,4).commit()
         pprint(result)
 
     def test_add_request_page_break(self):
@@ -96,6 +108,48 @@ class test_GDoc(TestCase):
         pprint(result)
         #'kix.ntntf5ko1m24'
 
+
+    # using document json data/contents
+
+    def test_document(self):
+        result = self.gdoc.document()
+        pprint(result)
+
+    def test_body_contents(self):
+        result = self.gdoc.body_contents()
+        pprint(result)
+        #pprint(list_set(result))
+
+    def test_inline_objects(self):
+        result= self.gdoc.inline_objects()
+        pprint(result)
+        "kix.se4xwuh4zgqc"
+
+    def test_paragraphs(self):
+        result = self.gdoc.paragraphs()
+        pprint(result)
+
+    def test_paragraphs_elements(self):
+        result = self.gdoc.paragraphs_elements()
+        pprint(result)
+
+    def test_text_runs(self):
+        result = self.gdoc.text_runs()
+        pprint(result)
+
+    def test_text_runs_find_text(self):
+        text_to_find = 'to-find'
+        matches = self.gdoc.text_runs_find_text(text_to_find, exact_match=False)
+        pprint(matches)
+        kwargs_formatting = {"bold": True , "foreground_color": RGB.RED}
+        self.gdoc.add_requests_text_style_to_ranges(matches, kwargs_formatting).commit()
+
+    def test_tables(self):
+        result = self.gdoc.tables()
+        table = result.pop(0)
+        #kwargs_formatting = {"bold": True, "foreground_color": RGB.RED, 'font_size': 10}
+        #self.gdoc.add_requests_text_style_to_range(table, kwargs_formatting).commit()
+        pprint(table)
 
 
 

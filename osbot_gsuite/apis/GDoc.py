@@ -3,6 +3,7 @@ from osbot_gsuite.apis.GDrive import GDrive
 #docs for request https://developers.google.com/docs/api/reference/rest/v1/documents/request
 from osbot_gsuite.apis.GTypes import Named_Style, Alignment, Dash_Style, RGB
 from osbot_utils.utils.Dev import pprint
+from osbot_utils.utils.Misc import list_set
 
 
 class GDoc:
@@ -13,6 +14,11 @@ class GDoc:
         self.file_id            = file_id
         self.requests           = []
         self.requests_committed = []
+
+    def add_request_delete_range(self, start_index, end_index):
+        request = {"deleteContentRange": {"range": { "startIndex": start_index, "endIndex": end_index } } }
+        self.requests.append(request)
+        return self
 
     def add_request_insert_inline_image(self, image_id):
         image_url = f'https://lh3.google.com/u/1/d/{image_id}'
@@ -29,14 +35,22 @@ class GDoc:
         self.requests.append(request)
         return self
 
+    def add_request_insert_table(self, rows, columns, location):
+        request = { 'insertTable': { 'rows'     : rows,
+                                     'columns'  : columns,
+                                     'location' : {"segmentId": None, 'index': location }}}
+        self.requests.append(request)
+        return self
+
     def add_request_insert_text(self, text, location):
         request = { "insertText" : { "text"      : text,
                                      "location" : {"segmentId": None, 'index': location }}}
         self.requests.append(request)
         return self
 
-    def add_request_named_range_create(self, name, range):
-        request ={"createNamedRange": {"name" : name  , "range": range }}
+    def add_request_named_range_create(self, name, start_index, end_index):
+        request = { "createNamedRange": {"name" : name  ,
+                                         "range": { "startIndex": start_index, "endIndex": end_index } }}
         self.requests.append(request)
         return self
 
@@ -113,15 +127,26 @@ class GDoc:
         self.requests.append(request)
         return self
 
+    def add_requests_text_style_to_range(self, range, kwargs_formatting):
+        start_index = range.get('start_index')
+        end_index = range.get('end_index')
+        if start_index and start_index:
+            kwargs_formatting["start_index"] = start_index
+            kwargs_formatting["end_index"  ] = end_index
+            self.add_request_text_style(**kwargs_formatting)
+        return self
+
+    def add_requests_text_style_to_ranges(self, ranges, kwargs_formatting):
+        for range in ranges:
+            self.add_requests_text_style_to_range(range, kwargs_formatting)
+        return self
+
+
     def commit(self):
         results = self.gdocs.execute_requests(file_id=self.file_id, requests=self.requests)
-        #print(results)
         self.requests_committed.extend(self.requests)
         self.requests = []
         return results.get('replies')
-
-    def document(self):
-        return self.gdocs.docs.get(documentId=self.file_id).execute()
 
     def info(self):
         info =  self.gdrive.file_metadata(file_id=self.file_id)
@@ -138,8 +163,6 @@ class GDoc:
 
     def file_name_update(self, new_name):
         body = {'name' : new_name}
-        #    fileId: fileId,
-            #resource: {name: "updated title"},
         return self.gdrive.file_update(file_id=self.file_id, body=body)
 
     def named_ranges(self, name):
@@ -157,7 +180,73 @@ class GDoc:
         doc = self.document()
         return doc.get('namedRanges',{})
 
-    def named_ranges_create(self, name, range):
-        result = self.add_request_named_range_create(name=name, range=range).commit()
+    def named_ranges_create(self, name, start_index, end_index):
+        result = self.add_request_named_range_create(name=name, start_index=start_index, end_index=end_index).commit()
         if len(result) > 0:
             return result.pop().get('createNamedRange',{}).get('namedRangeId')
+
+
+    # using document json data/contents
+
+    def body(self):
+        return self.document().get('body', {})
+
+    def content_group_by_entry_type(self, mappings, entry):
+        start_index = entry.get('startIndex')
+        end_index   = entry.get('endIndex')
+        for key, value in entry.items():
+            if key in ['startIndex', 'endIndex']:
+                continue
+            entry_type  = key
+            value["start_index"] = start_index
+            value["end_index"  ] = end_index
+            if mappings.get(entry_type) is None:
+                mappings[entry_type] = []
+            mappings[entry_type].append(value)
+
+    def body_contents(self):
+        content = self.body().get('content', [])
+        mappings = {}
+        for entry in content:
+            self.content_group_by_entry_type(mappings, entry)
+        return mappings
+
+    def document(self):
+        return self.gdocs.docs.get(documentId=self.file_id).execute()
+
+    def inline_objects(self):
+        mappings = {}
+        for key, inline_object in self.document().get('inlineObjects').items():
+            properties = inline_object.get('inlineObjectProperties', {})            # remove redundant inlineObjectProperties node
+            data       = properties.get('embeddedObject')                           # and embeddedObject
+            mappings[key] = data
+        return mappings
+
+    def paragraphs(self):
+        return self.body_contents().get('paragraph')
+
+    def paragraphs_elements(self):
+        paragraphs = self.paragraphs()
+        mappings = {}
+        for paragraph in paragraphs:
+            for entry in paragraph.get('elements',[]):
+                self.content_group_by_entry_type(mappings, entry)
+        return mappings
+
+    def tables(self):
+        return self.body_contents().get('table')
+
+    def text_runs(self):
+        return self.paragraphs_elements().get('textRun')
+
+    def text_runs_find_text(self, text, exact_match=False):
+        matches = []
+        for text_run in self.text_runs():
+            if text in text_run.get('content'):
+                if exact_match:
+                    if text != text_run.get('content'):
+                        continue
+                matches.append(text_run)
+        return matches
+    # utils
+
