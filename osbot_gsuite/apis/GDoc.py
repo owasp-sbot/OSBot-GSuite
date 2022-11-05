@@ -1,5 +1,6 @@
 from osbot_gsuite.apis.GDrive import GDrive
 from osbot_gsuite.apis.GTypes import Named_Style, Alignment, Dash_Style, RGB, Width_Type
+from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Misc import list_set
 
 # good docs references:
@@ -14,6 +15,15 @@ class GDoc:
         self.file_id            = file_id
         self.requests           = []
         self.requests_committed = []
+
+    def add_request_delete_named_range(self, name=None, named_range_id=None):
+        if name:
+            request = {"deleteNamedRange": {"name":name}}
+            self.requests.append(request)
+        if named_range_id:
+            request = {"deleteNamedRange": {"namedRangeId": named_range_id}}
+            self.requests.append(request)
+        return self
 
     def add_request_delete_table(self, table_index):
         tables = self.tables()
@@ -205,6 +215,16 @@ class GDoc:
         self.requests.append(request)
         return self
 
+    def add_request_replace_named_range_content(self, text, name=None, named_range_id=None):
+        if name:
+            request = {"replaceNamedRangeContent": {"namedRangeName":name , "text": text}}
+            self.requests.append(request)
+        elif named_range_id:
+            request = {"replaceNamedRangeContent": {"namedRangeName": named_range_id, "text": text}}
+            self.requests.append(request)
+        pprint(request)
+        return self
+
     def add_request_text_style_to_range(self, range, kwargs_text_style=None):
         start_index = range.get('start_index')
         end_index   = range.get('end_index')
@@ -326,20 +346,29 @@ class GDoc:
         body = {'name' : new_name}
         return self.gdrive.file_update(file_id=self.file_id, body=body)
 
-    def named_ranges(self, name):
-        data =  self.named_ranges_info(name).get('namedRanges', [])
-        ranges = []
-        for item in data:
-            for range in item.get('ranges'):
-                ranges.append(range)
-        return ranges
+    # def named_ranges(self, name):
+    #     data =  self.named_ranges_info(name).get('namedRanges', [])
+    #     ranges = []
+    #     for item in data:
+    #         for range in item.get('ranges'):
+    #             ranges.append(range)
+    #     return ranges
 
-    def named_ranges_info(self, name):
-        return self.named_ranges_list().get(name,{})
+    # def named_ranges_info(self, name):
+    #     return self.named_ranges_list().get(name,{})
 
-    def named_ranges_list(self):
-        doc = self.document()
-        return doc.get('namedRanges',{})
+    def named_ranges_delete(self, name, named_range_id=None):
+        return self.add_request_delete_named_range(name=name,named_range_id=named_range_id).commit()
+
+    def named_ranges_replace(self, text, name, named_range_id=None):
+        return self.add_request_replace_named_range_content(text=text, name=name,named_range_id=named_range_id).commit()
+
+    def named_ranges(self, name=None):
+        doc          = self.document()
+        named_ranges =  doc.get('namedRanges',{})
+        if name:
+            return named_ranges.get(name)
+        return named_ranges
 
     def named_ranges_create(self, name, start_index, end_index):
         result = self.add_request_named_range_create(name=name, start_index=start_index, end_index=end_index).commit()

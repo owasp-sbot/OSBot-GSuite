@@ -163,12 +163,16 @@ class test_GDoc(TestCase):
 
     def test_named_ranges(self):
         name = 'the name of the range'
+        text = 'new content ' + random_text(length=20)
         #name = 'another range v2'
-        # range = { "segmentId"  : None,
-        #           "startIndex" : 1,
-        #           "endIndex"   : 10}
-        # result = self.gdoc.named_ranges_create(name, range)
-        result = self.gdoc.named_ranges(name)
+        kwargs_create = { "name"        : name ,
+                          "start_index" : 1 ,
+                          "end_index"   : 10 }
+        #result = self.gdoc.named_ranges_create(**kwargs_create)
+        result = self.gdoc.named_ranges_replace(text=text, name=name)
+        #result = self.gdoc.named_ranges_delete(name)
+        pprint(result)
+        result = self.gdoc.named_ranges()
         pprint(result)
         #'kix.ntntf5ko1m24'
 
