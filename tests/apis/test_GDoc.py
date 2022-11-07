@@ -162,6 +162,7 @@ class test_GDoc(TestCase):
         pprint(result)
 
     def test_named_ranges(self):
+        print('--------')
         name = 'the name of the range'
         text = 'new content ' + random_text(length=20)
         #name = 'another range v2'
@@ -169,11 +170,23 @@ class test_GDoc(TestCase):
                           "start_index" : 1 ,
                           "end_index"   : 10 }
         #result = self.gdoc.named_ranges_create(**kwargs_create)
-        result = self.gdoc.named_ranges_replace(text=text, name=name)
+        #result = self.gdoc.named_ranges_replace(text=text, name=name)
+
+        #kwargs_style_formatting = {"bold": True, "foreground_color": RGB.RED}
+
+        #kwargs_paragraph_style = {"alignment": Alignment.END}
+        #result                 = self.gdoc.named_range_paragraph_style(name=name, paragraph_style=kwargs_paragraph_style)
+
+        #kwargs_text_style      = {"bold": True, "background_color": RGB.BLUE, "foreground_color": RGB.WHITE}
+        #result                 = self.gdoc.named_range_text_style(name=name, text_style=kwargs_text_style)
+
+        self.gdoc.named_range_clear_style(name)
+
+        #pprint(result)
         #result = self.gdoc.named_ranges_delete(name)
-        pprint(result)
-        result = self.gdoc.named_ranges()
-        pprint(result)
+        #pprint(result)
+        #result = self.gdoc.named_ranges()
+        #pprint(result)
         #'kix.ntntf5ko1m24'
 
 
@@ -229,19 +242,17 @@ class test_GDoc(TestCase):
         cell             = result[0][0]
         cell_start_index = cell.get('start_index') + 1
         targets          = cell.get('text_runs')
-
-
-        new_text = "aaa __" + random_text()
+        new_text         = "aaa __" + random_text()
         # start_index = target.get('start_index')
         # end_index   = target.get('end_index') -1
 
         kwargs_text_style      = {"bold": True, "background_color": RGB.BLUE, "foreground_color": RGB.WHITE}
         kwargs_paragraph_style = { "alignment": Alignment.START}
 
-        self.gdoc.add_requests_paragraph_style_to_ranges(targets, kwargs_paragraph_style)
-        self.gdoc.add_requests_text_style_to_ranges     (targets, kwargs_text_style     )
+        #self.gdoc.add_requests_paragraph_style_to_ranges(targets, kwargs_paragraph_style)
+        #self.gdoc.add_requests_text_style_to_ranges(targets, kwargs_text_style     )
 
-        self.gdoc.add_request_replace_ranges_text(ranges=targets, start_index=cell_start_index, new_text=new_text)
+        #self.gdoc.add_request_replace_ranges_text(ranges=targets, start_index=cell_start_index, new_text=new_text)
 
         self.gdoc.commit()
 

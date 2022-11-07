@@ -1,6 +1,5 @@
 from osbot_gsuite.apis.GDrive import GDrive
-from osbot_gsuite.apis.GTypes import Named_Style, Alignment, Dash_Style, RGB, Width_Type
-from osbot_utils.utils.Dev import pprint
+from osbot_gsuite.apis.GTypes import Named_Style, Dash_Style, RGB, Width_Type
 from osbot_utils.utils.Misc import list_set
 
 # good docs references:
@@ -117,7 +116,6 @@ class GDoc:
 
     # todo: this is not working reliably for tables
     def add_request_replace_ranges_text(self, ranges, start_index, new_text):
-        print()
         for range in ranges:
             self.add_request_delete_range(range)
         self.add_request_insert_text(text=new_text, location=start_index)
@@ -148,6 +146,14 @@ class GDoc:
         range      = { "segmentId"  : None, "startIndex" : start_index, "endIndex"   : end_index}
         request    = { "updateTextStyle" : { "textStyle": text_style,
                                              "fields"   : fields    ,
+                                             "range"    : range     }}
+        self.requests.append(request)
+        return self
+
+    def add_request_text_style_clear(self, start_index, end_index):                                 # bug: see why it doesn't work when document is empty
+        range      = { "segmentId"  : None, "startIndex" : start_index, "endIndex"   : end_index}
+        request    = { "updateTextStyle" : { "textStyle": {},
+                                             "fields"   : '*'    ,
                                              "range"    : range     }}
         self.requests.append(request)
         return self
@@ -222,12 +228,11 @@ class GDoc:
         elif named_range_id:
             request = {"replaceNamedRangeContent": {"namedRangeName": named_range_id, "text": text}}
             self.requests.append(request)
-        pprint(request)
         return self
 
     def add_request_text_style_to_range(self, range, kwargs_text_style=None):
-        start_index = range.get('start_index')
-        end_index   = range.get('end_index')
+        start_index = range.get('start_index') or range.get('startIndex')
+        end_index   = range.get('end_index'  ) or range.get('endIndex')
         if kwargs_text_style is None:
             kwargs_text_style = {}              # which will remove all formatting
         if start_index and start_index:
@@ -237,8 +242,8 @@ class GDoc:
         return self
 
     def add_request_paragraph_style_to_range(self, range, kwargs_paragraph_style=None):
-        start_index = range.get('start_index')
-        end_index   = range.get('end_index')
+        start_index = range.get('start_index') or range.get('startIndex')
+        end_index   = range.get('end_index'  ) or range.get('endIndex')
         if kwargs_paragraph_style is None:
             kwargs_paragraph_style = {}              # which will remove all formatting
         if start_index and start_index:
@@ -339,6 +344,9 @@ class GDoc:
     def info_all(self):
         return self.gdrive.file_metadata(file_id=self.file_id, fields='*')
 
+    def insert_text(self, text, location):
+        return self.add_request_insert_text(text=text, location=location).commit()
+
     def file_name(self):
         return self.info().get('file_name')
 
@@ -357,18 +365,49 @@ class GDoc:
     # def named_ranges_info(self, name):
     #     return self.named_ranges_list().get(name,{})
 
+    def named_range_paragraph_style(self, name, paragraph_style):
+        for entry in self.named_ranges(name):
+            for range in entry.get('ranges'):
+                self.add_request_paragraph_style_to_range(range=range, kwargs_paragraph_style=paragraph_style)
+        return self.commit()
+
+    def named_range_clear_style(self, name):
+        for entry in self.named_ranges(name):
+            for range in entry.get('ranges'):
+                self.add_request_paragraph_style_to_range(range=range, kwargs_paragraph_style={})
+                self.add_request_text_style_to_range     (range=range, kwargs_text_style     ={})
+
+        return self.commit()
+
+    def named_range_text_style(self, name, text_style):
+        named_range = self.named_ranges(name)
+        for entry in named_range:
+            for range in entry.get('ranges'):
+                self.add_request_text_style_to_range(range=range, kwargs_text_style=text_style)
+        return self.commit()
+
+
     def named_ranges_delete(self, name, named_range_id=None):
         return self.add_request_delete_named_range(name=name,named_range_id=named_range_id).commit()
 
-    def named_ranges_replace(self, text, name, named_range_id=None):
+    def named_ranges_delete_all(self):
+        for named_range_name in list_set(self.named_ranges()):
+            self.add_request_delete_named_range(name=named_range_name)
+        return self.commit()
+
+    def named_ranges_set_text(self, name, text, named_range_id=None):
         return self.add_request_replace_named_range_content(text=text, name=name,named_range_id=named_range_id).commit()
 
     def named_ranges(self, name=None):
         doc          = self.document()
         named_ranges =  doc.get('namedRanges',{})
+        mappings     = {}
+        for named_range_name, entry in named_ranges.items():
+            mappings[named_range_name]=entry.get('namedRanges')
+
         if name:
-            return named_ranges.get(name)
-        return named_ranges
+            return mappings.get(name, [])
+        return mappings
 
     def named_ranges_create(self, name, start_index, end_index):
         result = self.add_request_named_range_create(name=name, start_index=start_index, end_index=end_index).commit()
@@ -401,8 +440,31 @@ class GDoc:
             self.content_group_by_entry_type(mappings, entry)
         return mappings
 
-    def document(self):
-        return self.gdocs.docs.get(documentId=self.file_id).execute()
+    def document(self, fields=None):
+        return self.gdocs.docs.get(documentId=self.file_id, fields=fields).execute()
+
+    def document_end_index(self):
+        return self.document_range().get('end_index')
+
+    def document_range(self):
+        fields = "body.content(start_index,end_index)"  # todo: see what is the performance improvement in doing this for large documents
+        data   = self.document(fields=fields)           #       there should be one
+        start_index = None
+        end_index   = None
+        for range in data.get('body').get('content'):   # todo: find a better way to do this
+            if start_index is None:
+                start_index = range.get('startIndex')
+            end_index = range.get('endIndex')
+        return {"start_index": start_index, "end_index": end_index - 1}
+
+    def document_clear(self, delete_named_ranges=True):
+        range = self.document_range()
+        self.add_request_delete_range(range).commit()
+        if delete_named_ranges:
+            return self.named_ranges_delete_all()           # this will trigger the commit
+        else:
+            return self.commit()
+
 
     def inline_objects(self):
         mappings = {}
