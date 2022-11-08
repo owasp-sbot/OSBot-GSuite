@@ -1,5 +1,8 @@
 from osbot_gsuite.apis.GDrive import GDrive
 from osbot_gsuite.apis.GTypes import Named_Style, Dash_Style, RGB, Width_Type
+
+from osbot_gsuite.apis.utils.GDoc_Named_Range import GDoc_Named_Range
+from osbot_utils.utils.Dev import pprint
 from osbot_utils.utils.Misc import list_set
 
 # good docs references:
@@ -329,6 +332,7 @@ class GDoc:
 
     def commit(self):
         if len(self.requests) > 0:
+            #print(f'[commit] {len(self.requests)} requests')
             results = self.gdocs.execute_requests(file_id=self.file_id, requests=self.requests)
             self.requests_committed.extend(self.requests)
             self.requests = []
@@ -365,6 +369,9 @@ class GDoc:
     # def named_ranges_info(self, name):
     #     return self.named_ranges_list().get(name,{})
 
+    def named_range(self, named_range_name):
+        return GDoc_Named_Range(gdoc=self, named_range_name=named_range_name)
+
     def named_range_paragraph_style(self, name, paragraph_style):
         for entry in self.named_ranges(name):
             for range in entry.get('ranges'):
@@ -386,17 +393,14 @@ class GDoc:
                 self.add_request_text_style_to_range(range=range, kwargs_text_style=text_style)
         return self.commit()
 
-
-    def named_ranges_delete(self, name, named_range_id=None):
-        return self.add_request_delete_named_range(name=name,named_range_id=named_range_id).commit()
-
-    def named_ranges_delete_all(self):
-        for named_range_name in list_set(self.named_ranges()):
-            self.add_request_delete_named_range(name=named_range_name)
-        return self.commit()
-
-    def named_ranges_set_text(self, name, text, named_range_id=None):
+    def named_range_set_text(self, name, text, named_range_id=None):
         return self.add_request_replace_named_range_content(text=text, name=name,named_range_id=named_range_id).commit()
+
+    def named_range_ranges(self, name):
+        ranges = []
+        for item in self.named_ranges(name):
+            ranges.extend(item.get('ranges'))
+        return ranges
 
     def named_ranges(self, name=None):
         doc          = self.document()
@@ -414,6 +418,13 @@ class GDoc:
         if len(result) > 0:
             return result.pop().get('createNamedRange',{}).get('namedRangeId')
 
+    def named_ranges_delete(self, name, named_range_id=None):
+        return self.add_request_delete_named_range(name=name,named_range_id=named_range_id).commit()
+
+    def named_ranges_delete_all(self):
+        for named_range_name in list_set(self.named_ranges()):
+            self.add_request_delete_named_range(name=named_range_name)
+        return self.commit()
 
     # using document json data/contents
 
@@ -521,5 +532,14 @@ class GDoc:
                         continue
                 matches.append(text_run)
         return matches
+
+    def ranges_start_and_end(self, ranges):
+        start_index = None
+        end_index = None
+        for range in ranges:                            # todo: see if there a better way to do this (just read the first and last one)
+            if start_index is None:
+                start_index = range.get('startIndex')
+            end_index = range.get('endIndex')
+        return {"start_index": start_index, "end_index": end_index}
     # utils
 
