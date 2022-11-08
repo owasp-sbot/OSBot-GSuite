@@ -80,8 +80,7 @@ class GDoc_Named_Range:
         return self
 
     def reset_named_range(self):
-        self.gdoc.add_request_delete_named_range(name=self.named_range_name)
-        self.gdoc.add_request_named_range_create(name=self.named_range_name, start_index=self.start_index, end_index=self.end_index)
+        self.gdoc.add_request_named_range_reset(name=self.named_range_name,start_index=self.start_index, end_index=self.end_index)
         return self
 
     def set_range_indexes(self):

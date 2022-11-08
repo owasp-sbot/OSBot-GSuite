@@ -1,5 +1,5 @@
 from osbot_gsuite.apis.GDrive import GDrive
-from osbot_gsuite.apis.GTypes import Named_Style, Dash_Style, RGB, Width_Type
+from osbot_gsuite.apis.GTypes import Named_Style, Dash_Style, RGB, Width_Type, Alignment
 
 from osbot_gsuite.apis.utils.GDoc_Named_Range import GDoc_Named_Range
 from osbot_utils.utils.Dev import pprint
@@ -37,9 +37,10 @@ class GDoc:
     def add_request_delete_range(self, range):
         start_index = range.get('start_index')
         end_index   = range.get('end_index')
-        if end_index > start_index:
-            request = {"deleteContentRange": {"range": { "startIndex": start_index, "endIndex": end_index } } }
-            self.requests.append(request)
+        if start_index and end_index:
+            if end_index > start_index:
+                request = {"deleteContentRange": {"range": { "startIndex": start_index, "endIndex": end_index } } }
+                self.requests.append(request)
         return self
 
     def add_request_delete_table_column(self, table, column_index=0):
@@ -59,14 +60,18 @@ class GDoc:
         image_url = f'https://lh3.google.com/u/1/d/{image_id}'
         return self.add_request_insert_inline_image_from_file_id(image_url=image_url)
 
-    def add_request_insert_inline_image_from_file_id(self, image_url):
-        location = {'index': 1}
-        height   = { 'magnitude': 250, 'unit': 'PT'}
-        width    = { 'magnitude': 250,'unit': 'PT'}
-        request  = {'insertInlineImage': { 'location'  : location    ,
-                                           'uri'       : image_url   ,
-                                           'objectSize': { 'height': height, 'width': width}} }
-        self.requests.append(request)
+    def add_request_insert_inline_image_from_file_id(self, image_url, location, width=None, height=None):
+        if type(image_url) is str and location > 0:
+            location = {'index': location}
+            object_size = {}
+            if width:
+                object_size["width"] = { 'magnitude': width, 'unit': 'PT'}
+            if  height:
+                object_size["height"] = {'magnitude': height, 'unit': 'PT'}
+            request  = {'insertInlineImage': { 'location'  : location    ,
+                                               'uri'       : image_url   ,
+                                               'objectSize': object_size} }
+            self.requests.append(request)
         return self
 
     def add_request_insert_table(self, rows, columns, location):
@@ -104,6 +109,11 @@ class GDoc:
         request = { "createNamedRange": {"name" : name  ,
                                          "range": { "startIndex": start_index, "endIndex": end_index } }}
         self.requests.append(request)
+        return self
+
+    def add_request_named_range_reset(self, name, start_index, end_index):
+        self.add_request_delete_named_range(name=name)
+        self.add_request_named_range_create(name=name, start_index=start_index, end_index=end_index)
         return self
 
     def add_request_page_break(self, location):
@@ -238,7 +248,7 @@ class GDoc:
         end_index   = range.get('end_index'  ) or range.get('endIndex')
         if kwargs_text_style is None:
             kwargs_text_style = {}              # which will remove all formatting
-        if start_index and start_index:
+        if end_index and start_index and end_index > start_index:
             kwargs_text_style["start_index"] = start_index
             kwargs_text_style["end_index"  ] = end_index
             self.add_request_text_style(**kwargs_text_style)
@@ -337,6 +347,7 @@ class GDoc:
             self.requests_committed.extend(self.requests)
             self.requests = []
             return results.get('replies')
+        return []
 
     def info(self):
         info =  self.gdrive.file_metadata(file_id=self.file_id)
@@ -407,10 +418,20 @@ class GDoc:
         named_ranges =  doc.get('namedRanges',{})
         mappings     = {}
         for named_range_name, entry in named_ranges.items():
-            mappings[named_range_name]=entry.get('namedRanges')
+            mappings[named_range_name] = entry.get('namedRanges')
 
         if name:
             return mappings.get(name, [])
+        return mappings
+
+    def named_ranges_info(self):
+        mappings = {}
+        for named_range_name, entries in self.named_ranges().items():
+            all_ranges = []
+            for entry in entries:
+                all_ranges.extend(entry.get('ranges'))
+            mappings[named_range_name] = { "range"      : self.ranges_start_and_end(all_ranges),
+                                           "all_ranges" : all_ranges                           }
         return mappings
 
     def named_ranges_create(self, name, start_index, end_index):
@@ -470,12 +491,19 @@ class GDoc:
 
     def document_clear(self, delete_named_ranges=True):
         range = self.document_range()
-        self.add_request_delete_range(range).commit()
+        default_paragraph_style = {"named_style":Named_Style.NORMAL_TEXT,"alignment": Alignment.START}
+        self.add_request_paragraph_style_to_range(range, default_paragraph_style)
+        self.add_request_text_style_to_range(range, {})
+        self.add_request_delete_range(range)
         if delete_named_ranges:
             return self.named_ranges_delete_all()           # this will trigger the commit
         else:
             return self.commit()
 
+    def document_clear_formating(self):
+        range = self.document_range()
+
+        self.commit()
 
     def inline_objects(self):
         mappings = {}
