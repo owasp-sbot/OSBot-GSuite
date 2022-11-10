@@ -34,14 +34,21 @@ class GDoc:
             self.add_request_delete_range(table)
         return self
 
-    def add_request_delete_range(self, range):
-        start_index = range.get('start_index')
-        end_index   = range.get('end_index')
+    def add_requests_delete_tables(self):
+        tables = self.tables()
+        while tables and len(tables) >0:                       # do the updates in reverse so that we don't have to deal with changed start and end indexes
+            table = tables.pop()
+            self.add_request_delete_range(table)
+        return self
+
+    def add_request_delete_range(self, range, start_delta=0 , end_delta=0):
+        start_index = range.get('start_index') + start_delta
+        end_index   = range.get('end_index'  ) + end_delta
         if start_index and end_index:
             if end_index > start_index:
                 request = {"deleteContentRange": {"range": { "startIndex": start_index, "endIndex": end_index } } }
                 self.requests.append(request)
-        return self
+        return end_index - start_index
 
     def add_request_delete_table_column(self, table, column_index=0):
         table_start_index = table.get('start_index')
@@ -121,10 +128,10 @@ class GDoc:
         self.requests.append(request)
         return self
 
-    def add_request_replace_range_text(self, range, new_text):
+    def add_request_replace_range_text(self, range, text):
         start_index = range.get('start_index')
         self.add_request_delete_range(range)
-        self.add_request_insert_text(text=new_text, location=start_index)
+        self.add_request_insert_text(text=text, location=start_index)
         return self
 
     # todo: this is not working reliably for tables
@@ -270,9 +277,9 @@ class GDoc:
             self.add_request_paragraph_style_to_range(range, kwargs_paragraph_style)
         return self
 
-    def add_requests_text_style_to_ranges(self, ranges, kwargs_formatting):
+    def add_requests_text_style_to_ranges(self, ranges, kwargs_text_formatting):
         for range in ranges:
-            self.add_request_text_style_to_range(range, kwargs_formatting)
+            self.add_request_text_style_to_range(range, kwargs_text_formatting)
         return self
 
     def add_request_update_table_cell_style(self, table, column_index, row_index, column_span=1, row_span=1,
@@ -524,25 +531,49 @@ class GDoc:
                 self.content_group_by_entry_type(mappings, entry)
         return mappings
 
+    def table_cells(self, table):
+        table_texts = self.table_paragraph_elements_text_runs_content(table)
+        cells = []
+        for row in table_texts:
+            for cell in row:
+                cells.append(cell)
+        return cells
+
+    def table_column(self, table, column_index):
+        column_data = []
+        table_texts = self.table_paragraph_elements_text_runs_content(table)
+        for row in table_texts:
+            if len(row) > column_index:
+                cell = row[column_index]
+                column_data.append(cell)
+        return column_data
+
+    def table_row(self, table, row_index):
+        table_texts = self.table_paragraph_elements_text_runs_content(table)
+        if len(table_texts) > row_index:
+            return table_texts[row_index]
+
     def table_paragraph_elements_text_runs_content(self, table):
         rows = []
-        for table_rows in table.get('tableRows'):
-            row = []
-            for table_cell in table_rows.get('tableCells'):
-                content = table_cell.get('content')
-                text_runs = []
-                for item in content:
-                    paragraph = item.get('paragraph')
-                    for element in paragraph.get('elements'):
-                        text_run = {"start_index": element.get('startIndex'),
-                                    "end_index"  : element.get('endIndex'),
-                                    "content"    : element.get('textRun').get('content')}
-                        text_runs.append(text_run)
-                cell = { "start_index": table_cell.get('startIndex'),
-                         "end_index"  : table_cell.get('endIndex'),
-                         "text_runs"  : text_runs }
-                row.append(cell)
-            rows.append(row)
+        if table:
+            for table_rows in table.get('tableRows'):
+                row = []
+                for table_cell in table_rows.get('tableCells'):
+                    content = table_cell.get('content')
+                    text_runs = []
+                    for item in content:
+                        paragraph = item.get('paragraph')
+                        for element in paragraph.get('elements'):
+                            text_run = {"start_index": element.get('startIndex'),
+                                        "end_index"  : element.get('endIndex'),
+                                        "content"    : element.get('textRun').get('content')}
+                            text_runs.append(text_run)
+                    cell = { "start_index": table_cell.get('startIndex'),
+                             "end_index"  : table_cell.get('endIndex'),
+                             "text_runs"  : text_runs,
+                             "range"      : self.ranges_start_and_end(text_runs)}
+                    row.append(cell)
+                rows.append(row)
         return rows
 
     def tables(self):
@@ -562,12 +593,14 @@ class GDoc:
         return matches
 
     def ranges_start_and_end(self, ranges):
-        start_index = None
-        end_index = None
+        start_index  = None
+        end_index    = None
+        content_size = 0
         for range in ranges:                            # todo: see if there a better way to do this (just read the first and last one)
             if start_index is None:
-                start_index = range.get('startIndex')
-            end_index = range.get('endIndex')
-        return {"start_index": start_index, "end_index": end_index}
+                start_index = range.get('start_index') or range.get('startIndex')
+            end_index = range.get('endIndex') or range.get('end_index')
+        content_size = end_index - start_index
+        return {"start_index": start_index, "end_index": end_index , "content_size": content_size}
     # utils
 

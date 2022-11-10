@@ -33,6 +33,10 @@ class GDoc_Named_Range:
             self.gdoc.insert_text(text=text, location=location)
         return self
 
+    def append_table(self, rows, columns):
+        if self.end_index:
+            self.gdoc.add_request_insert_table(rows=rows, columns=columns, location=self.end_index)
+
     def append_text(self, text):
         if self.end_index:
             self.gdoc.insert_text(text=text, location=self.end_index)
