@@ -82,8 +82,8 @@ class GDrive:
         results = self.files.list(pageSize=size, fields="files(id,name)").execute()
         return results.get('files', [])
 
-    def files_in_folder(self, folder_id, size=100):
-        results = self.files.list(q="parents='{0}'".format(folder_id),pageSize=size, fields="files(id,name)").execute()
+    def files_in_folder(self, folder_id, size=100, fields="files(id,name)"):
+        results = self.files.list(q="parents='{0}' and trashed = false".format(folder_id),pageSize=size, fields=fields).execute()
         return results.get('files', [])
 
     def find_by_name(self, name, mime_type = None):

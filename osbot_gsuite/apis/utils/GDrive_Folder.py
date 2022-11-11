@@ -1,4 +1,5 @@
 from osbot_gsuite.apis.GDrive import GDrive
+from osbot_utils.decorators.lists.index_by import index_by
 from osbot_utils.utils.Files import Files
 
 
@@ -33,8 +34,9 @@ class GDrive_Folder:
         png_mime_type = 'image/png'
         return self.file_upload(path=path, mime_type=png_mime_type)
 
-    def files(self, size=100):
-        return self.gdrive.files_in_folder(folder_id=self.folder_id, size=size)
+    @index_by
+    def files(self, size=100, fields="files(id,name)"):
+        return self.gdrive.files_in_folder(folder_id=self.folder_id, size=size, fields=fields)
 
         #file_id = self.graph_id_in_gdrive(file_name)
 

@@ -63,11 +63,11 @@ class GDoc:
         self.requests.append(request)
         return self
 
-    def add_request_insert_inline_image(self, image_id):
+    def add_request_insert_inline_image(self, image_id, location, width=None, height=None):
         image_url = f'https://lh3.google.com/u/1/d/{image_id}'
-        return self.add_request_insert_inline_image_from_file_id(image_url=image_url)
+        return self.add_request_insert_inline_image_from_image_url(image_url=image_url, location=location, width=width, height=height)
 
-    def add_request_insert_inline_image_from_file_id(self, image_url, location, width=None, height=None):
+    def add_request_insert_inline_image_from_image_url(self, image_url, location, width=None, height=None):
         if type(image_url) is str and location > 0:
             location = {'index': location}
             object_size = {}
@@ -367,7 +367,7 @@ class GDoc:
         return self.gdrive.file_metadata(file_id=self.file_id, fields='*')
 
     def insert_text(self, text, location):
-        return self.add_request_insert_text(text=text, location=location).commit()
+        return self.add_request_insert_text(text=text, location=location)
 
     def file_name(self):
         return self.info().get('file_name')
@@ -412,7 +412,8 @@ class GDoc:
         return self.commit()
 
     def named_range_set_text(self, name, text, named_range_id=None):
-        return self.add_request_replace_named_range_content(text=text, name=name,named_range_id=named_range_id).commit()
+        self.add_request_replace_named_range_content(text=text, name=name,named_range_id=named_range_id)
+        return self.commit()
 
     def named_range_ranges(self, name):
         ranges = []
@@ -442,12 +443,14 @@ class GDoc:
         return mappings
 
     def named_ranges_create(self, name, start_index, end_index):
-        result = self.add_request_named_range_create(name=name, start_index=start_index, end_index=end_index).commit()
+        self.add_request_named_range_create(name=name, start_index=start_index, end_index=end_index)
+        result = self.commit()
         if len(result) > 0:
             return result.pop().get('createNamedRange',{}).get('namedRangeId')
 
     def named_ranges_delete(self, name, named_range_id=None):
-        return self.add_request_delete_named_range(name=name,named_range_id=named_range_id).commit()
+        self.add_request_delete_named_range(name=name,named_range_id=named_range_id)
+        return self.commit()
 
     def named_ranges_delete_all(self):
         for named_range_name in list_set(self.named_ranges()):
@@ -507,10 +510,10 @@ class GDoc:
         else:
             return self.commit()
 
-    def document_clear_formating(self):
-        range = self.document_range()
-
-        self.commit()
+    # def document_clear_formating(self):
+    #     #range = self.document_range()
+    # #
+    #     self.commit()
 
     def inline_objects(self):
         mappings = {}
