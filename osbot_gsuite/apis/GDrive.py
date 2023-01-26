@@ -27,7 +27,7 @@ class GDrive:
             "name": title
         }
         if folder:
-            file_type["parents"] =  [folder]
+            file_metadata["parents"] =  [folder]
         file = self.files.create(body=file_metadata, fields='id').execute()
         return file.get('id')
 
