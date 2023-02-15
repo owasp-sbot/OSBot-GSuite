@@ -132,6 +132,8 @@ class GSheets:
     def get_values_as_objects(self, file_id, range_selector):
         columns = self.get_values(file_id, range_selector)
         fields = columns.pop(0)
+        if fields == []:                    # if the first row is empty, then use the second row as the fields
+            fields = columns.pop(0)
         values = []
         for column in columns:
             item = {}
