@@ -128,7 +128,7 @@ class GSheets:
                                                                  body             = body))
         return result
 
-    # this assumes that the the first row contains the fields and the rest is the data items
+    # this assumes that the first row contains the fields and the rest is the data items
     def get_values_as_objects(self, file_id, range_selector):
         columns = self.get_values(file_id, range_selector)
         fields = columns.pop(0)
