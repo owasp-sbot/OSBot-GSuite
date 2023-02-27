@@ -1,5 +1,4 @@
 from googleapiclient.http import MediaFileUpload
-
 from osbot_gsuite.apis.GSuite import GSuite
 from osbot_utils.utils.Dev import Dev
 from osbot_utils.utils.Files import Files
@@ -8,8 +7,13 @@ from osbot_utils.utils.Files import Files
 class GDrive:
 
     def __init__(self,gsuite_secret_id=None):
-        self.gsuite = GSuite(gsuite_secret_id).drive_v3()
-        self.files  = self.gsuite.files()
+        self.gsuite_secret_id = gsuite_secret_id
+
+    def gsuite(self):
+        return GSuite(self.gsuite_secret_id).drive_v3()
+
+    def files(self):
+        return self.gsuite().files()
 
     def execute(self, command):
         try:
@@ -28,11 +32,11 @@ class GDrive:
         }
         if folder:
             file_metadata["parents"] =  [folder]
-        file = self.files.create(body=file_metadata, fields='id').execute()
+        file = self.files().create(body=file_metadata, fields='id').execute()
         return file.get('id')
 
     def file_export(self, file_Id):
-        return self.files.export(fileId=file_Id, mimeType='application/pdf').execute()
+        return self.files().export(fileId=file_Id, mimeType='application/pdf').execute()
 
     def file_export_as_pdf_to(self,file_id,target_file):
         pdf_data = self.file_export(file_id)
@@ -41,14 +45,14 @@ class GDrive:
         return target_file
 
     def file_metadata(self, file_id, fields = "id,name"):
-        return self.execute(self.files.get(fileId = file_id, fields=fields))
+        return self.execute(self.files().get(fileId = file_id, fields=fields))
 
     def file_metadata_update(self, file_id, changes):
-        return self.files.update(fileId=file_id, body=changes).execute()
+        return self.files().update(fileId=file_id, body=changes).execute()
 
     def file_delete(self, file_id):
         if file_id:
-            self.files.delete(fileId= file_id).execute()
+            self.files().delete(fileId= file_id).execute()
 
     def file_share_with_domain(self,file_id,domain):
         domain_permission = {
@@ -56,22 +60,22 @@ class GDrive:
             'role': 'writer',
             'domain': domain,
         }
-        return self.gsuite.permissions().create(fileId=file_id, body=domain_permission, fields='id').execute()
+        return self.gsuite().permissions().create(fileId=file_id, body=domain_permission, fields='id').execute()
 
     def file_update(self, file_id, body):
-        return self.files.update(fileId=file_id, body=body).execute()
+        return self.files().update(fileId=file_id, body=body).execute()
         # if Files.exists(local_file):
         #     file_metadata = {'name': Files.file_name(local_file)}
         #     media = MediaFileUpload(local_file, mimetype=mime_type)
-        #     file = self.files.update(body=file_metadata, media_body=media, fileId= file_id, fields='id').execute()
+        #     file = self.files().update(body=file_metadata, media_body=media, fileId= file_id, fields='id').execute()
         #     return file.get('id')
-        return None
+        #return None
 
     def file_upload(self, local_file, mime_type, folder_id=None):
         if Files.exists(local_file):
             file_metadata = {'name': Files.file_name(local_file), 'parents': [folder_id]}
             media = MediaFileUpload(local_file, mimetype=mime_type)
-            file = self.files.create(body=file_metadata, media_body=media, fields='id').execute()
+            file = self.files().create(body=file_metadata, media_body=media, fields='id').execute()
             return file.get('id')
         return None
 
@@ -79,11 +83,11 @@ class GDrive:
         return 'https://drive.google.com/open?id={0}'.format(file_id)
 
     def files_all(self, size):
-        results = self.files.list(pageSize=size, fields="files(id,name)").execute()
+        results = self.files().list(pageSize=size, fields="files(id,name)").execute()
         return results.get('files', [])
 
     def files_in_folder(self, folder_id, size=100, fields="files(id,name)"):
-        results = self.files.list(q="parents='{0}' and trashed = false".format(folder_id),pageSize=size, fields=fields).execute()
+        results = self.files().list(q="parents='{0}' and trashed = false".format(folder_id),pageSize=size, fields=fields).execute()
         return results.get('files', [])
 
     def find_by_name(self, name, mime_type = None):
@@ -91,13 +95,13 @@ class GDrive:
             query = "name = '{0}' and mimeType = '{1}'".format(name,mime_type)
         else:
             query = "name = '{0}'".format(name)
-        results = self.execute(self.files.list(q=query))  # , fields="files(id,name)"))
+        results = self.execute(self.files().list(q=query))  # , fields="files(id,name)"))
         if results and len(results.get('files')) > 0:
             return results.get('files').pop()
         return None
 
     def find_by_mime_type(self, mime_type):
-        results = self.execute(self.files.list(q="mimeType = '{0}'".format(mime_type), fields="files(id,name)"))
+        results = self.execute(self.files().list(q="mimeType = '{0}'".format(mime_type), fields="files(id,name)"))
         if results:
             return results.get('files', [])
 

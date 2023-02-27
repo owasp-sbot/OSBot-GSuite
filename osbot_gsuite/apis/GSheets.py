@@ -3,17 +3,22 @@ from osbot_gsuite.apis.GDrive import GDrive
 from osbot_gsuite.apis.GSheet import GSheet
 from osbot_gsuite.apis.GSuite import GSuite
 from osbot_utils.decorators.lists.index_by import index_by
+from osbot_utils.decorators.methods.cache_on_self import cache_on_self
 
 
 class GSheets:
 
     def __init__(self, gsuite_secret_id=None):
-        self.gdrive       = GDrive(gsuite_secret_id)
-        self.spreadsheets = GSuite(gsuite_secret_id).sheets_v4().spreadsheets()
+        self.gdrive           = GDrive(gsuite_secret_id)
+        self.gsuite_secret_id = gsuite_secret_id
+
+    @cache_on_self
+    def spreadsheets(self):
+        return GSuite(self.gsuite_secret_id).sheets_v4().spreadsheets()
 
     def batch_update(self, file_id, requests):
         body = {'requests': requests}
-        return self.execute(self.spreadsheets.batchUpdate(spreadsheetId=file_id, body=body))
+        return self.execute(self.spreadsheets().batchUpdate(spreadsheetId=file_id, body=body))
 
     def create(self, title, folder=None):
         return self.gdrive.file_create("application/vnd.google-apps.spreadsheet", title, folder)
@@ -24,7 +29,7 @@ class GSheets:
         return file_id
 
 
-        #return self.execute(self.spreadsheets.create( body=body))
+        #return self.execute(self.spreadsheets().create( body=body))
 
 
     def execute(self,command):
@@ -42,7 +47,7 @@ class GSheets:
     #    return self.gdrive.find_by_mime_type(mime_type_presentations)
 
     def sheets_metadata(self, file_id):
-        return self.execute(self.spreadsheets.get(spreadsheetId=file_id))
+        return self.execute(self.spreadsheets().get(spreadsheetId=file_id))
 
     @index_by
     def sheets(self, file_id):
@@ -111,18 +116,18 @@ class GSheets:
 
     def clear_values(self, file_id, sheet_name):
         sheet_range = "{0}!A1:Z".format(sheet_name)
-        return self.execute(self.spreadsheets.values().clear(spreadsheetId=file_id, range=sheet_range))
+        return self.execute(self.spreadsheets().values().clear(spreadsheetId=file_id, range=sheet_range))
 
     def get_values(self, file_id, range):
         if file_id and range:
-            values = self.spreadsheets.values()
+            values = self.spreadsheets().values()
             result = self.execute(values.get(spreadsheetId = file_id , range = range    ))
             return result.get('values')
 
     def set_values(self, file_id, sheet_range, values):
         value_input_option = 'USER_ENTERED' # vs 'RAW'
         body               = { 'values' : values }
-        result = self.execute(self.spreadsheets.values().update( spreadsheetId    = file_id,
+        result = self.execute(self.spreadsheets().values().update( spreadsheetId    = file_id,
                                                                  range            = sheet_range,
                                                                  valueInputOption = value_input_option,
                                                                  body             = body))
