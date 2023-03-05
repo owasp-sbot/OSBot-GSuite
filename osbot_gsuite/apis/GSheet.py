@@ -15,6 +15,9 @@ class GSheet:
         self.requests_committed = []
         self.requests_results   = []
 
+    def __repr__(self):
+        return f"[GSheet] {self.sheet_name} (id: {self.sheet_id})"
+
     def add_request(self, request):
         self.requests.append(request)
         return self
@@ -258,10 +261,12 @@ class GSheet:
                  "sheet_name"           : self.sheet_name             ,
                  "# requests queued"    : len(self.requests          ),
                  "# requests committed" : len(self.requests_committed),
-                 #"requests_results" : self.requests_results
                  }
 
     def commit(self):
-        self.gsheets.execute_requests(file_id=self.file_id, requests=self.requests)
-        self.requests_committed.extend(self.requests)
-        self.requests = []
+        if self.requests:
+            self.gsheets.execute_requests(file_id=self.file_id, requests=self.requests)
+            self.requests_committed.extend(self.requests)
+            self.requests = []
+            return True
+        return False

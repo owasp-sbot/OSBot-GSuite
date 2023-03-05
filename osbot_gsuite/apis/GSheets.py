@@ -61,7 +61,8 @@ class GSheets:
         return sheets
 
     def sheet(self, file_id, sheet_id, sheet_name):
-        return GSheet(gsheets=self, file_id=file_id, sheet_id=sheet_id, sheet_name=sheet_name)
+        if file_id is not None and sheet_id is not None and sheet_name is not None:
+            return GSheet(gsheets=self, file_id=file_id, sheet_id=sheet_id, sheet_name=sheet_name)
 
     def sheets_add_sheet(self, file_id, title):
         request = { "addSheet": { "properties": { "title": title } } }
@@ -122,7 +123,8 @@ class GSheets:
         if file_id and range:
             values = self.spreadsheets().values()
             result = self.execute(values.get(spreadsheetId = file_id , range = range    ))
-            return result.get('values')
+            return result.get('values', [])
+        return []
 
     def set_values(self, file_id, sheet_range, values):
         value_input_option = 'USER_ENTERED' # vs 'RAW'
@@ -135,16 +137,21 @@ class GSheets:
 
     # this assumes that the first row contains the fields and the rest is the data items
     def get_values_as_objects(self, file_id, range_selector):
-        columns = self.get_values(file_id, range_selector)
-        fields = columns.pop(0)
-        if fields == []:                    # if the first row is empty, then use the second row as the fields
-            fields = columns.pop(0)
+        raw_data = self.get_values(file_id, range_selector)
+        return self.convert_raw_data_to_objects(raw_data)
+
+    def convert_raw_data_to_objects(self, raw_data):
         values = []
-        for column in columns:
-            item = {}
-            for index, cell in enumerate(column):
-                item[fields[index]] = cell
-            values.append(item)
+        if raw_data:
+            fields = raw_data.pop(0)
+            if not fields:                    # if the first row is empty, then use the second row as the fields
+                fields = raw_data.pop(0)
+
+            for column in raw_data:
+                item = {}
+                for index, cell in enumerate(column):
+                    item[fields[index]] = cell
+                values.append(item)
         return values
 
 
