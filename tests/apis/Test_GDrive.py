@@ -81,3 +81,22 @@ class Test_GDrive(TestCase):
         assert len(files) > 0
 
 
+
+    def test_drive_activity(self):
+        import google.auth
+        from google.oauth2.credentials import Credentials
+        from googleapiclient.discovery import build
+
+        # Authenticate and authorize the credentials
+        creds, _ = google.auth.default(scopes=['https://www.googleapis.com/auth/drive.activity'])
+        drive_activity = build('driveactivity', 'v2', credentials=creds)
+
+        # Define the parameters for the API request
+        request_params = {
+            'pageSize': 10,  # Max number of activity events to return
+            'filter': "time >= '2022-01-01T00:00:00.000Z'",  # Filter by date range
+            'orderBy': 'time desc'  # Sort by most recent events first
+        }
+
+        # Call the API to get the activity events
+        response = drive_activity.activity().query(**request_params).execute()

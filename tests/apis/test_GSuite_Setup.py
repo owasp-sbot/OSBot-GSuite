@@ -24,7 +24,10 @@ class test_GSuite_Setup(TestCase):
                                                     #'https://www.googleapis.com/auth/documents'      ,
                                                     'https://www.googleapis.com/auth/drive'          ,
                                                     'https://www.googleapis.com/auth/presentations'  ,
-                                                    'https://www.googleapis.com/auth/spreadsheets'   ]
+                                                    'https://www.googleapis.com/auth/spreadsheets'   ,
+                                                    #'https://www.googleapis.com/auth/drive.activity' ,         # todo add support for asking these for specific case studies
+                                                    #'https://www.googleapis.com/auth/contacts'
+                                                    ]
 
 
     def test_save_gsuite_client_secret_in_aws(self):
@@ -33,6 +36,7 @@ class test_GSuite_Setup(TestCase):
     def test_create_auth_token_using_web_browser_flow(self):
         self.gsuite_setup.create_auth_token_using_web_browser_flow(self.scopes)
 
+    # run this to create local file_token.json file
     def test_create_auth_token_using_web_browser_flow__store_in_env(self):
         self.gsuite_setup.create_auth_token_using_web_browser_flow__store_in_env(self.scopes)
 

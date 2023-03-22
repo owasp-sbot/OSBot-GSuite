@@ -9,7 +9,7 @@ class GDrive:
     def __init__(self,gsuite_secret_id=None):
         self.gsuite_secret_id = gsuite_secret_id
 
-    def gsuite(self):
+    def gsuite(self):                                       # todo refactor into drive_v3
         return GSuite(self.gsuite_secret_id).drive_v3()
 
     def files(self):

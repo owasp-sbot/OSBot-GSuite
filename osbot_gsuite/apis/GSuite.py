@@ -82,6 +82,12 @@ class GSuite:
         return self.create_service('drive', 'v3', 'drive')
         #return self.create_service('drive', 'v3', 'drive.metadata.readonly')
 
+    def drive_activity_v2(self):
+        return self.create_service('driveactivity', 'v2', 'drive.activity')
+
+    def people_v1(self):
+        return self.create_service('people', 'v1', 'contacts')
+
     def slides_v1(self):
         return self.create_service('slides', 'v1', 'presentations')
 

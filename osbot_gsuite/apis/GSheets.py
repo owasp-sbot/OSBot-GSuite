@@ -126,6 +126,11 @@ class GSheets:
             return result.get('values', [])
         return []
 
+    def set_sheet_data(self, file_id, sheet_name, data):
+        sheet_data = self.covert_raw_data_to_flat_objects(data)
+        self.clear_values(file_id, sheet_name)
+        return self.set_values(file_id, sheet_name, sheet_data)
+
     def set_values(self, file_id, sheet_range, values):
         value_input_option = 'USER_ENTERED' # vs 'RAW'
         body               = { 'values' : values }
