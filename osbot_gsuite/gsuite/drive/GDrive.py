@@ -34,7 +34,7 @@ class GDrive(Type_Safe):
         return self.file_create(file_type='application/vnd.google-apps.folder', title=folder_name)
 
     def folders_list(self):
-        query   = "mimeType='application/vnd.google-apps.folder'"
+        query   = "mimeType='application/vnd.google-apps.folder'  and trashed=false"
         results = self.files().list(q=query, fields="files(id, name)").execute()
         folders = results.get('files', [])
         return folders
@@ -96,7 +96,7 @@ class GDrive(Type_Safe):
     def file_weblink(self, file_id):
         return 'https://drive.google.com/open?id={0}'.format(file_id)
 
-    def files_all(self, size, fields="files(id,name)"):
+    def files_all(self, size=100, fields="files(id,name)"):
         results = self.files().list(pageSize=size, fields=fields).execute()
         return results.get('files', [])
 
