@@ -35,7 +35,7 @@ class test_GSlides(TestCase):
 
     def test_all_presentations(self):
         with self.gslides as _:
-            presentations = _.all_presentations()               # todo: add mode to only get 5 presentations 
+            presentations = _.all_presentations()               # todo: add mode to only get 5 presentations
             assert len(presentations) > 0
 
     def test_pdf__bytes(self):
