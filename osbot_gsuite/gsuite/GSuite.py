@@ -36,9 +36,9 @@ class GSuite(Type_Safe):                                           # todo see if
         raise ValueError("no OAuth2 data or file found")
 
 
-    def create_service(self,serviceName, version, scope) -> Resource:
-        creds = self.create_credentials(scope)
-        return build(serviceName, version, credentials=creds)
+    def create_service(self,service_name, version, scopes) -> Resource:
+        creds = self.create_credentials(scopes)
+        return build(service_name, version, credentials=creds)
 
     # helper files to create individual GSuite service objects
     def admin_reports_v1(self):
@@ -51,8 +51,10 @@ class GSuite(Type_Safe):                                           # todo see if
         return self.create_service('docs', 'v1', 'documents')
 
     def drive_v3(self):
-        return self.create_service('drive', 'v3', 'drive')
-        #return self.create_service('drive', 'v3', 'drive.metadata.readonly')
+        kwargs = dict(service_name = 'drive',
+                      version      = 'v3',
+                      scopes       = ['https://www.googleapis.com/auth/drive'])
+        return self.create_service(**kwargs)
 
     def drive_activity_v2(self):
         return self.create_service('driveactivity', 'v2', 'drive.activity')

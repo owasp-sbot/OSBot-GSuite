@@ -1,20 +1,27 @@
+from googleapiclient.discovery import Resource
 from googleapiclient.http    import MediaFileUpload
+from osbot_utils.base_classes.Type_Safe import Type_Safe
 
-from osbot_gsuite.gsuite.GSuite import GSuite
-from osbot_utils.utils.Dev   import Dev
-from osbot_utils.utils.Files import Files
+from osbot_gsuite.gsuite.GSuite                     import GSuite
+from osbot_utils.decorators.methods.cache_on_self   import cache_on_self
+from osbot_utils.utils.Dev                          import Dev
+from osbot_utils.utils.Files                        import Files
 
 
-class GDrive:
+class GDrive(Type_Safe):
+    gsuite: GSuite
 
-    def __init__(self,gsuite_secret_id=None):
-        self.gsuite_secret_id = gsuite_secret_id
+    @cache_on_self
+    def drive_v3(self) -> Resource:                                       # todo refactor into drive_v3
+        return self.gsuite.drive_v3()
 
-    def gsuite(self):                                       # todo refactor into drive_v3
-        return GSuite(self.gsuite_secret_id).drive_v3()
-
+    @cache_on_self
     def files(self):
-        return self.gsuite().files()
+        return self.drive_v3().files()
+
+    @cache_on_self
+    def permissions(self):
+        return self.drive_v3().permissions()
 
     def execute(self, command):
         try:
@@ -61,7 +68,7 @@ class GDrive:
             'role': 'writer',
             'domain': domain,
         }
-        return self.gsuite().permissions().create(fileId=file_id, body=domain_permission, fields='id').execute()
+        return self.permissions().create(fileId=file_id, body=domain_permission, fields='id').execute()
 
     def file_update(self, file_id, body):
         return self.files().update(fileId=file_id, body=body).execute()
@@ -83,8 +90,8 @@ class GDrive:
     def file_weblink(self, file_id):
         return 'https://drive.google.com/open?id={0}'.format(file_id)
 
-    def files_all(self, size):
-        results = self.files().list(pageSize=size, fields="files(id,name)").execute()
+    def files_all(self, size, fields="files(id,name)"):
+        results = self.files().list(pageSize=size, fields=fields).execute()
         return results.get('files', [])
 
     def files_in_folder(self, folder_id, size=100, fields="files(id,name)"):
