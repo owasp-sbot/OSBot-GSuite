@@ -1,13 +1,16 @@
-from osbot_gsuite.apis.GDrive import GDrive
-from osbot_gsuite.apis.GSuite import GSuite
+from osbot_gsuite.gsuite.drive.GDrive import GDrive
+from osbot_utils.base_classes.Type_Safe import Type_Safe
+
 from osbot_utils.utils import Misc
 
 
-class GSlides:
+class GSlides(Type_Safe):
+    presentations : object
+    gdrive        : GDrive
 
-    def __init__(self, gsuite_secret_id=None):
-        self.presentations = GSuite(gsuite_secret_id).slides_v1().presentations()
-        self.gdrive        = GDrive(gsuite_secret_id)
+    # def __init__(self, gsuite_secret_id=None):
+    #     self.presentations = GSuite(gsuite_secret_id).slides_v1().presentations()
+    #     self.gdrive        = GDrive(gsuite_secret_id)
 
     # misc utils
 

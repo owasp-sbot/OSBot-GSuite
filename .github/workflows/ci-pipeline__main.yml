@@ -8,11 +8,13 @@ on:
 env:
   RELEASE_TYPE           : 'major'
   PACKAGE_NAME           : 'osbot_gsuite'
+  GSUITE__OAUTH2__DATA   : ${{ secrets.GSUITE__OAUTH2__DATA   }}
+  GDRIVE__TEMP_FOLDER    : ${{ secrets.GDRIVE__TEMP_FOLDER    }}
 
 jobs:
 
   run-unit-tests:
-    name: "Run Unit tets"
+    name: "Run Unit tests"
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
