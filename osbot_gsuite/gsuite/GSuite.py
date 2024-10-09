@@ -66,7 +66,10 @@ class GSuite(Type_Safe):                                           # todo see if
         return self.create_service('people', 'v1', 'contacts')
 
     def slides_v1(self):
-        return self.create_service('slides', 'v1', 'presentations')
+        kwargs = dict(service_name = 'slides',
+                      version      = 'v1',
+                      scopes       = ['https://www.googleapis.com/auth/presentations'])
+        return self.create_service(**kwargs)
 
     def sheets_v4(self):
         return self.create_service('sheets', 'v4', 'spreadsheets')
