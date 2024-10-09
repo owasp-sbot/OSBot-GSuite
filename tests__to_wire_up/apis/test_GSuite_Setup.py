@@ -1,17 +1,9 @@
-import json
 import os
-from distutils.dir_util import copy_tree
-from unittest import TestCase
-
-from dotenv import load_dotenv
-from oauth2client import service_account
-
-from osbot_aws.apis.Secrets import Secrets
-from osbot_gsuite.apis.GDrive import GDrive
-from osbot_gsuite.apis.GSheets import GSheets
+from unittest                       import TestCase
+from dotenv                         import load_dotenv
+from osbot_gsuite.apis.GDrive       import GDrive
 from osbot_gsuite.apis.GSuite_Setup import GSuite_Setup
-from osbot_utils.utils.Dev import Dev, pprint
-from osbot_utils.utils.Files import file_contents
+from osbot_utils.utils.Dev          import Dev
 
 
 class test_GSuite_Setup(TestCase):
@@ -21,7 +13,7 @@ class test_GSuite_Setup(TestCase):
         self.filename_with_gsuite_client_secret = 'client_secret_538397666918-ftcpk1s9u8gbgmc47c7ocb9kdll4m7j3.apps.googleusercontent.com.json'
         self.file_with_credentials              = f'{os.getenv("HOME")}/Downloads/{self.filename_with_gsuite_client_secret}'
         self.scopes                             = [ #'https://www.googleapis.com/auth/calendar'       ,
-                                                    #'https://www.googleapis.com/auth/documents'      ,
+                                                    'https://www.googleapis.com/auth/documents'      ,
                                                     'https://www.googleapis.com/auth/drive'          ,
                                                     'https://www.googleapis.com/auth/presentations'  ,
                                                     'https://www.googleapis.com/auth/spreadsheets'   ,
