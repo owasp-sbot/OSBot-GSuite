@@ -1,10 +1,13 @@
 from googleapiclient.discovery import Resource
+from googleapiclient.errors import HttpError
 from googleapiclient.http    import MediaFileUpload
+from osbot_utils.utils.Objects import dict_to_obj
+
 from osbot_utils.base_classes.Type_Safe import Type_Safe
 
 from osbot_gsuite.gsuite.GSuite                     import GSuite
 from osbot_utils.decorators.methods.cache_on_self   import cache_on_self
-from osbot_utils.utils.Dev                          import Dev
+from osbot_utils.utils.Dev import Dev, pprint
 from osbot_utils.utils.Files                        import Files
 
 
@@ -32,6 +35,25 @@ class GDrive(Type_Safe):
 
     def folder_create(self, folder_name, parent_folder=None):
         return self.file_create(file_type='application/vnd.google-apps.folder', title=folder_name, folder=parent_folder)
+
+    def folder_delete(self, folder_id):
+        if self.folder_exists(folder_id):
+            return self.file_delete(folder_id)
+        return False
+
+    def folder_info(self, folder_id):
+        try:
+            folder = self.files().get(fileId=folder_id, fields="*").execute()
+
+            if folder.get("mimeType") == "application/vnd.google-apps.folder" and not folder.get("trashed"):
+                return dict_to_obj(folder)
+            return None
+        except HttpError as http_error:
+            if http_error.status_code != 404:
+                raise http_error
+
+    def folder_exists(self, folder_id):
+        return self.folder_info(folder_id) is not None
 
     def folders_list(self):
         query   = "mimeType='application/vnd.google-apps.folder'  and trashed=false"
@@ -67,6 +89,8 @@ class GDrive(Type_Safe):
     def file_delete(self, file_id):
         if file_id:
             self.files().delete(fileId= file_id).execute()
+            return True
+        return False
 
     def file_share_with_domain(self,file_id,domain):
         domain_permission = {

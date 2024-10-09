@@ -6,7 +6,7 @@ from osbot_utils.utils.Dev                          import pprint
 from osbot_gsuite.gsuite.drive.Temp__GDrive__Folder import Temp__GDrive__Folder
 
 
-class test_Temp_GDrive_Folder(TestCase):
+class test_Temp__GDrive__Folder(TestCase):
 
     @classmethod
     def setUpClass(cls):
@@ -16,10 +16,16 @@ class test_Temp_GDrive_Folder(TestCase):
     def test_parent_folder(self):
         assert self.temp_gdrive_folder.parent_folder() == get_env(ENV_NAME__GDRIVE__TEMP_FOLDER)
 
-    # def test__enter__exit__(self):
-    #     parent_folder = self.temp_gdrive_folder.parent_folder()
-    #     temp_folder_name = 'an_temp_folder'
-    #     with self.temp_gdrive_folder.gdrive as _:
-    #         #temp_folder_id = _.folder_create(folder_name=temp_folder_name, parent_folder=parent_folder)
-    #         temp_folder_id = '13u8FGbfQauaXM5M60UXojS56LpiOBKHG'
-    #         pprint(temp_folder_id)
+    def test__enter__exit__(self):
+        with self.temp_gdrive_folder as _:
+            folder_info = _.folder_info()
+            assert _.folder_exists()                                          is True
+            assert folder_info.id                                             == _.folder_id
+            assert folder_info.kind                                           == "drive#file"
+            assert folder_info.name                                           == _.folder_name
+            assert folder_info.mimeType                                       == 'application/vnd.google-apps.folder'
+            assert folder_info.name.startswith('osbot-gsuite-random-folder_') is True
+            assert folder_info.parents                                        == [self.temp_gdrive_folder.parent_folder()]
+            assert folder_info.webViewLink                                    == f'https://drive.google.com/drive/folders/{_.folder_id}'
+
+        assert _.folder_exists() is False
