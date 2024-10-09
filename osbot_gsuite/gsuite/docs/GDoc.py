@@ -538,6 +538,9 @@ class GDoc(Type_Safe):
                 self.content_group_by_entry_type(mappings, entry)
         return mappings
 
+    def pdf__file(self, file_path):
+        return self.gdrive.file_export_as_pdf_to(self.file_id, file_path)
+
     def pdf__bytes(self):
         return self.gdrive.file_export(file_id=self.file_id)
 
