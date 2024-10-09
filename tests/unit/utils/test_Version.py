@@ -1,8 +1,8 @@
 from unittest import TestCase
 
+from osbot_gsuite.utils.Version import Version
 from osbot_utils.utils.Files import file_exists, file_contents
 
-from osbot_prefect.utils.Version import Version
 
 class test_Version(TestCase):
 
