@@ -74,6 +74,9 @@ class GDrive(Type_Safe):
     def file_export(self, file_Id):
         return self.files().export(fileId=file_Id, mimeType='application/pdf').execute()
 
+    def file_move_to_folder(self, file_id, folder_id):
+        return self.files().update(fileId=file_id, addParents=folder_id, fields='id, parents').execute()
+
     def file_export_as_pdf_to(self,file_id,target_file):
         pdf_data = self.file_export(file_id)
         with open(target_file, "wb") as fh:

@@ -48,7 +48,10 @@ class GSuite(Type_Safe):                                           # todo see if
         return self.create_service('calendar','v3','calendar')
 
     def docs_v1(self):
-        return self.create_service('docs', 'v1', 'documents')
+        kwargs = dict(service_name = 'docs',
+                      version      = 'v1',
+                      scopes       = ['https://www.googleapis.com/auth/documents'])
+        return self.create_service(**kwargs)
 
     def drive_v3(self):
         kwargs = dict(service_name = 'drive',
