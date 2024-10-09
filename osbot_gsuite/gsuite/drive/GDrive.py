@@ -1,6 +1,7 @@
-from googleapiclient.http import MediaFileUpload
-from osbot_gsuite.apis.GSuite import GSuite
-from osbot_utils.utils.Dev import Dev
+from googleapiclient.http    import MediaFileUpload
+
+from osbot_gsuite.gsuite.GSuite import GSuite
+from osbot_utils.utils.Dev   import Dev
 from osbot_utils.utils.Files import Files
 
 
