@@ -1,22 +1,24 @@
-from osbot_gsuite.apis.GDrive import GDrive
-from osbot_gsuite.apis.GTypes import Named_Style, Dash_Style, RGB, Width_Type, Alignment
+from osbot_utils.utils.Objects import dict_to_obj
 
-from osbot_gsuite.apis.utils.GDoc_Named_Range import GDoc_Named_Range
-from osbot_utils.utils.Dev import pprint
-from osbot_utils.utils.Misc import list_set
+from osbot_gsuite.gsuite.docs.GDocs             import GDocs
+from osbot_gsuite.gsuite.drive.GDrive import GDrive
+from osbot_utils.base_classes.Type_Safe         import Type_Safe
+
+from osbot_gsuite.apis.GTypes                   import Named_Style, Dash_Style, RGB, Width_Type, Alignment
+from osbot_gsuite.apis.utils.GDoc_Named_Range   import GDoc_Named_Range
+from osbot_utils.utils.Dev                      import pprint
+from osbot_utils.utils.Misc                     import list_set
 
 # good docs references:
 #  - document structure: https://developers.google.com/docs/api/concepts/structure
 #  - request object: https://developers.google.com/docs/api/reference/rest/v1/documents/request
 
-class GDoc:
-
-    def __init__(self, gdocs, file_id):
-        self.gdrive             = GDrive()
-        self.gdocs              = gdocs
-        self.file_id            = file_id
-        self.requests           = []
-        self.requests_committed = []
+class GDoc(Type_Safe):
+    gdrive             : GDrive
+    gdocs              : GDocs
+    file_id            : str
+    requests           : list
+    requests_committed : list
 
     def add_request_delete_named_range(self, name=None, named_range_id=None):
         if name:
@@ -56,6 +58,7 @@ class GDoc:
                                                                   'columnIndex'       : column_index }}}
         self.requests.append(request)
         return self
+
     def add_request_delete_table_row(self, table, row_index=0):
         table_start_index = table.get('start_index')
         request = { 'deleteTableRow': { 'tableCellLocation': { 'tableStartLocation': { 'index': table_start_index },
@@ -460,7 +463,7 @@ class GDoc:
     # using document json data/contents
 
     def body(self):
-        return self.document().get('body', {})
+        return self.document().body
 
     def content_group_by_entry_type(self, mappings, entry):
         start_index = entry.get('startIndex')
@@ -483,7 +486,8 @@ class GDoc:
         return mappings
 
     def document(self, fields=None):
-        return self.gdocs.docs.get(documentId=self.file_id, fields=fields).execute()
+        data = self.gdocs.documents().get(documentId=self.file_id, fields=fields).execute()
+        return dict_to_obj(data)
 
     def document_end_index(self):
         return self.document_range().get('end_index')
