@@ -1,22 +1,36 @@
+from googleapiclient.discovery import Resource
+from googleapiclient.errors import HttpError
+
+from osbot_utils.utils.Objects import dict_to_obj
+
+from osbot_gsuite.gsuite.GSuite import GSuite
 from osbot_gsuite.gsuite.drive.GDrive import GDrive
 from osbot_utils.base_classes.Type_Safe import Type_Safe
 
 from osbot_utils.utils import Misc
 
+# todo: refactor methods below into more specific class, since there are tons of methods here
+#       put presentation specific methods into a class called GSlides__Presentation or GPresentation
 
 class GSlides(Type_Safe):
-    presentations : object
     gdrive        : GDrive
+    gsuite        : GSuite
 
     # def __init__(self, gsuite_secret_id=None):
     #     self.presentations = GSuite(gsuite_secret_id).slides_v1().presentations()
     #     self.gdrive        = GDrive(gsuite_secret_id)
 
+    def slides_v1(self) -> Resource:
+        return self.gsuite.slides_v1()
+
+    def presentations(self) -> Resource:
+        return self.slides_v1().presentations()
+
     # misc utils
 
     def batch_update(self, file_id, requests):
         body = {'requests': requests}
-        return self.execute(self.presentations.batchUpdate(presentationId=file_id, body=body))
+        return self.execute(self.presentations().batchUpdate(presentationId=file_id, body=body))
 
     def execute(self,command):
         return self.gdrive.execute(command)
@@ -151,16 +165,20 @@ class GSlides(Type_Safe):
                                                   "tableRowProperties": { "minRowHeight":  { 'magnitude': height, 'unit': 'PT'}},
                                                   "fields"            : "minRowHeight"}}
 
-    def element_set_text_requests(self, file_id, element_id, text):
-        return [ {   'deleteText' : { 'objectId'      : element_id         ,
-                                      'textRange'     : { 'type': 'ALL' }}},
-                 {
-                     'insertText': { 'objectId'      : element_id          ,
-                                     'insertionIndex': 0                   ,
-                                     'text'          : text              }}]
-    def element_set_text(self, file_id, element_id, text):
+    def element_set_text_requests(self, file_id, element_id, text, delete_existing_text=True):
+        request_delete = { 'deleteText' : { 'objectId'      : element_id      ,
+                                            'textRange'  : { 'type': 'ALL' }}},
+        request_insert = {'insertText': { 'objectId'      : element_id        ,
+                                          'insertionIndex': 0                 ,
+                                          'text'          : text              }}
+        if delete_existing_text:
+            return [ request_delete, request_insert]
+        else:
+            return [ request_insert]
 
-        requests =  self.element_set_text_requests(file_id, element_id, text)
+    def element_set_text(self, file_id, element_id, text, delete_existing_text=True):
+
+        requests =  self.element_set_text_requests(file_id, element_id, text, delete_existing_text=delete_existing_text)
 
         return self.batch_update(file_id, requests)
 
@@ -192,21 +210,41 @@ class GSlides(Type_Safe):
                                                 'fields'           : fields     }}]
         return self.batch_update(file_id, requests)
 
-    def presentation_create(self, title):
+    def pdf__file(self, presentation_id, file_path):                            # todo: refactor with version that exists in GDoc (which is very smilar
+        return self.gdrive.file_export_as_pdf_to(presentation_id, file_path)
+
+    def pdf__bytes(self, presentation_id):
+        return self.gdrive.file_export(file_id=presentation_id)
+
+    def presentation_create(self, title, folder_id=None):
         body = { 'title': title }
-        presentation = self.presentations.create(body=body).execute()
-        return presentation.get('presentationId')
+        presentation_info = self.presentations().create(body=body).execute()
+        presentation_id   = presentation_info.get('presentationId')
+        if folder_id:
+            self.gdrive.file_move_to_folder(presentation_id, folder_id)
+
+        return dict_to_obj(dict(presentation_info  = presentation_info ,
+                                presentation_id    = presentation_id   ,
+                                folder_id = folder_id))
 
     def presentation_copy(self, file_id, title, parent_folder):
         body  = { 'name': title, 'parents':[parent_folder] }
         result = self.execute(self.gdrive.files.copy(fileId = file_id, body=body))
         return result.get('id')
 
+    def presentation_delete(self, presentation_id):
+        return self.gdrive.file_delete(presentation_id)
+
+    def presentation_exists(self, presentation_id):
+        return self.presentation_metadata(presentation_id) is not None
+
     def presentation_metadata(self,presentation_id):
         try:
-            return self.presentations.get(presentationId = presentation_id).execute()
-        except:
-            return None
+            data = self.presentations().get(presentationId = presentation_id).execute()
+            return dict_to_obj(data)
+        except HttpError as http_error:
+            if http_error.status_code != 404:
+                raise http_error
 
     def slide_delete_request(self, slide_id):
         return { "deleteObject": { "objectId" : slide_id}}

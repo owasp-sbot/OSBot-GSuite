@@ -16,7 +16,7 @@ class test_GDocs(TestCase):
     @classmethod
     def setUpClass(cls):
         cls.temp_folder_id = osbot_gsuite_testing.gdrive_temp_folder()
-        cls.gdocs = GDocs()
+        cls.gdocs          = GDocs()
 
     def test_setUpClass(self):
         with self.gdocs as _:
