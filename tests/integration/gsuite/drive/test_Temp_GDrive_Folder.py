@@ -17,9 +17,9 @@ class test_Temp_GDrive_Folder(TestCase):
         assert self.temp_gdrive_folder.parent_folder() == get_env(ENV_NAME__GDRIVE__TEMP_FOLDER)
 
     # def test__enter__exit__(self):
-    #     temp_folder_name = '__osbot_gsuite_temp_folder/sub-folder'
+    #     parent_folder = self.temp_gdrive_folder.parent_folder()
+    #     temp_folder_name = 'an_temp_folder'
     #     with self.temp_gdrive_folder.gdrive as _:
-    #         pprint(_.folders_list())
-    #         #result = _.folder_create(temp_folder_name)
-    #         #folder_id =
-    #         #pprint(result)
+    #         #temp_folder_id = _.folder_create(folder_name=temp_folder_name, parent_folder=parent_folder)
+    #         temp_folder_id = '13u8FGbfQauaXM5M60UXojS56LpiOBKHG'
+    #         pprint(temp_folder_id)

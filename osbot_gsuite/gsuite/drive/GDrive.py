@@ -30,8 +30,8 @@ class GDrive(Type_Safe):
             Dev.pprint(error)                   # add better error handling log capture
             return None
 
-    def folder_create(self, folder_name):
-        return self.file_create(file_type='application/vnd.google-apps.folder', title=folder_name)
+    def folder_create(self, folder_name, parent_folder=None):
+        return self.file_create(file_type='application/vnd.google-apps.folder', title=folder_name, folder=parent_folder)
 
     def folders_list(self):
         query   = "mimeType='application/vnd.google-apps.folder'  and trashed=false"
