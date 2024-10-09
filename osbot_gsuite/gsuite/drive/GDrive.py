@@ -33,6 +33,12 @@ class GDrive(Type_Safe):
     def folder_create(self, folder_name):
         return self.file_create(file_type='application/vnd.google-apps.folder', title=folder_name)
 
+    def folders_list(self):
+        query   = "mimeType='application/vnd.google-apps.folder'"
+        results = self.files().list(q=query, fields="files(id, name)").execute()
+        folders = results.get('files', [])
+        return folders
+
     def file_create(self, file_type, title, folder=None):
         file_metadata = {
             "mimeType": file_type,

@@ -31,3 +31,10 @@ class test_GDrive(TestCase):
             for file in files:
                 assert list_set(file) == filed_names
 
+    def test_folders_list(self):
+        with self.gdrive as _:
+            folders = _.folders_list()
+            assert len(folders) > 0
+            for folder in folders:
+                assert list_set(folder) == ['id', 'name']
+
