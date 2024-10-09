@@ -24,6 +24,12 @@ class GDocs(Type_Safe):
     def docs_v1(self) -> Resource:
         return self.gsuite.docs_v1()
 
+    @cache_on_self
+    def documents(self) -> Resource:
+        return self.docs_v1().documents()
+
+
+    # methods
     def document_create(self, title, folder_id=None):
         body     = { 'title': title }
         doc_info = self.documents().create(body=body).execute()
@@ -49,9 +55,6 @@ class GDocs(Type_Safe):
             if http_error.status_code != 404:
                 raise http_error
 
-    @cache_on_self
-    def documents(self) -> Resource:
-        return self.docs_v1().documents()
 
     def execute_requests(self, file_id, requests):
         body = {'requests': requests}

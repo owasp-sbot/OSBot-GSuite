@@ -538,6 +538,9 @@ class GDoc(Type_Safe):
                 self.content_group_by_entry_type(mappings, entry)
         return mappings
 
+    def pdf__bytes(self):
+        return self.gdrive.file_export(file_id=self.file_id)
+
     def table_cells(self, table):
         table_texts = self.table_paragraph_elements_text_runs_content(table)
         cells = []

@@ -28,3 +28,8 @@ class test_GDoc(TestCase):
     def test_body(self):
         with self.gdoc as _:
             assert len(_.body().content) == 2
+
+    def test_pdf__bytes(self):
+        with self.gdoc as _:
+            assert _.pdf__bytes().startswith(b'%PDF-1.4\n%\xd3\xeb\xe9\xe1')
+
