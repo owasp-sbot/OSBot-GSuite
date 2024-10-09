@@ -8,6 +8,7 @@ on:
 env:
   RELEASE_TYPE           : 'minor'
   PACKAGE_NAME           : 'osbot_gsuite'
+  GSUITE__OAUTH2__DATA   : ${{ secrets.GSUITE__OAUTH2__DATA   }}
 
 jobs:
 
